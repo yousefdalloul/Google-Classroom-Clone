@@ -12,5 +12,6 @@
 
     <h1>My Classroom</h1>
     <p>Welcome {{$name}}, <?= $title ?></p>
+    <a href="{{ route('classrooms.show',1 )}}">Create</a>
 </body>
 </html>
