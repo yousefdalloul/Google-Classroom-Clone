@@ -1,8 +1,12 @@
-@include('partials.header')
+@extends('layouts.master')
+
+@section('title','Create Classrooms')
+
+@section('content')
     <div class= "container">
     <h1>Create Classroom!</h1>
 
-    <form action="{{route('classroom.store')}}" method="post">
+    <form action="{{route('classrooms.store')}}" method="post" enctype="multipart/form-data">
         @csrf
         <div class= "form-floating mb-3">
             <input type="text" class="form-control" name = "name" id="name" placeholder="Class Name">
@@ -28,4 +32,4 @@
         <button type="submit" class="btn btn-primary">Create Room</button>
     </form>
     </div>
-@include('partials.footer')
+@endsection

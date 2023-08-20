@@ -1,4 +1,8 @@
-@include('partials.header')
+@extends('layouts.master')
+
+@section('title','Edit Classroom ' . $classroom->name)
+
+@section('content')
     <div class= "container">
         <h1>{{ $classroom->name }} (#{{ $classroom->id }})</h1>
         <h3>{{ $classroom->section }}</h3>
@@ -9,4 +13,4 @@
         </div>
         <div class="col-md-9"></div>
     </div>
-@include('partials.footer')
+@endsection

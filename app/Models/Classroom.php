@@ -12,4 +12,9 @@ class Classroom extends Model
     protected $fillable = [
         'name','section','subject','room','theme','cover_image_path','code'
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
 }

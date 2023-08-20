@@ -1,11 +1,21 @@
-@include('partials.header')
+@extends('layouts.master')
+
+@section('title','Classrooms')
+
+@section('content')
+
 <div class= "container">
     <h1>Classrooms</h1>
+    @if(session()->has('success'))
+        <div class="alert alert-success">
+            {{ session('success')}}
+        </div>
+    @endif
     <div class="row">
         @foreach($classrooms as $classroom)
             <div class="col-md-3">
                 <div class="card">
-                    <img src="" class="card-img-top" alt="">
+                    <img src="storage/{{ $classroom->cover_image_path }}" class="card-img-top" alt="">
                     <div class="card-body">
                         <h5 class="card-title">{{ $classroom->name }}</h5>
                         <p class="card-text">{{ $classroom->section }} - {{ $classroom->room }}</p>
@@ -22,4 +32,9 @@
         @endforeach
     </div>
 </div>
-@include('partials.footer')
+@endsection
+
+@push('scripts')
+    <script>console.log('@@stack')</script>
+@endpush
+
