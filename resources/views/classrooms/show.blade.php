@@ -1,14 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Show</title>
-</head>
-<body>
-<h1>Classroom Details # {{$id}}/{{$dark}}</h1>
-
-</body>
-</html>
+@include('partials.header')
+    <div class= "container">
+        <h1>{{ $classroom->name }} (#{{ $classroom->id }})</h1>
+        <h3>{{ $classroom->section }}</h3>
+        <div class="col-md-3">
+            <div class="border rounded p-3 text-center">
+                <span class="text-success fs-3">{{ $classroom->code }}</span>
+            </div>
+        </div>
+        <div class="col-md-9"></div>
+    </div>
+@include('partials.footer')
