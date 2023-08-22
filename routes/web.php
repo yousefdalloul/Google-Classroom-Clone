@@ -16,34 +16,35 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/','welcome');
 Route::get('/', function () {
-    return view('welcome')
-        ->name('home');
-});
-Route::get('/classrooms',[ClassroomController::class,'index'])
-            ->name('classrooms.index');
-
-Route::get('/classrooms/edit',[ClassroomController::class,'edit'])
-    ->name('classrooms.edit');
-
-Route::get('/classrooms/create',[ClassroomController::class,'create'])
-    ->name('classrooms.create');
-
-Route::get('/classrooms/{classroom}/{dark?}',[ClassroomController::class,'show'])
-    ->name('classrooms.show')
-    -> where('classroom','\d+') //Regular expression
-    -> where('dark','yes|no');
-
-//            every time we need YourClass we should pass the dependency manually
-//            $instance = new YourClass($dependency);
-
-
-//            Service Container.
-//            //add a binding for the class YourClass
-//            App::bind( YourClass::class, function()
-//            {
-//                //do some preliminary work: create the needed dependencies
-//                $dependency = new DepClass( config('some.value') );
+    return view('welcome');
+      })->name('home');
 //
-//                //create and return the object with his dependencies
-//                return new YourClass( $dependency );
-//            });
+//Route::get('/classrooms',[ClassroomController::class,'index'])
+//            ->name('classrooms.index');
+//
+//Route::get('/classrooms/create',[ClassroomController::class,'create'])
+//    ->name('classrooms.create');
+//
+//Route::post('/classrooms',[ClassroomController::class,'store'])
+//    ->name('classrooms.store');
+//
+//Route::get('/classrooms/{classroom}', [ClassroomController::class, 'show'])
+//    ->name('classrooms.show')
+//    ->where('classroom', '\d+');  // Regular expression for numeric values
+//    //->where('dark', 'yes|no'); // Only allow 'yes' or 'no' for the 'dark' parameter
+//
+//Route::get('/classrooms/{classroom}/edit', [ClassroomController::class, 'edit'])
+//    ->name('classrooms.edit')
+//    ->where('classroom', '\d+');
+//
+//Route::put('/classrooms/{classroom}', [ClassroomController::class, 'update'])
+//    ->name('classrooms.update')
+//    ->where('classroom', '\d+');
+//
+//Route::put('/classrooms/{classroom}', [ClassroomController::class, 'destroy'])
+//    ->name('classrooms.destroy')
+//    ->where('classroom', '\d+');
+
+Route::resource('/classrooms',ClassroomController::class)->names([
+
+    ]);

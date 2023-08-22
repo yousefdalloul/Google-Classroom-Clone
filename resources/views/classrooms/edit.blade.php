@@ -1,15 +1,21 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Edit</title>
-</head>
-<body>
+@extends('layouts.master')
 
-<h1>Classroom Details # {{$id}}/{{$edit}}</h1>
+@section('title','Classrooms')
 
-</body>
-</html>
+@section('content')
+<div class= "container">
+    <h1>Edit Classroom!</h1>
+
+    <form action="{{route('classrooms.update',$classroom->id)}}" method="post" enctype="multipart/form-data">
+        @csrf
+        <!--Form Method Sppofing -->
+{{--        <input type="hidden" name="_method" value="put">--}}
+{{--        {{ method_field('put') }}--}}
+        @method('PUT')
+
+        @include('classrooms._form',[
+            'button_label' => 'Upload Classroom'
+        ])
+    </form>
+</div>
+@endsection

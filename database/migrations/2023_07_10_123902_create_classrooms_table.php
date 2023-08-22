@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name',255);
             $table->char('code',10)->unique();
-            $table->string('sections')->nullable();
+            $table->string('section')->nullable();
             $table->string('subject')->nullable();
             $table->string('room')->nullable();
             $table->string('cover_image_path')->nullable();
