@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ClassroomRequest;
 use App\Models\Classroom;
 use App\Test;
 use Illuminate\Contracts\Support\Renderable;
@@ -10,9 +11,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View as BaseView;
 use Mockery\Generator\Method;
 
@@ -33,11 +36,14 @@ class ClassroomController extends Controller
 
     public function create()
     {
-        return view()->make('classrooms.create');
+        return view()->make('classrooms.create',[
+            'classroom'=>new Classroom(),
+        ]);
     }
 
-    public function store(Request $request) : RedirectResponse
+    public function store(ClassroomRequest $request) : RedirectResponse
     {
+
         //Method 1
         $classroom = new Classroom();
 //        $classroom->name = $request->post('name');
@@ -55,16 +61,22 @@ class ClassroomController extends Controller
 
         if ($request->hasFile('cover_image')){
             $file = $request->file('cover_image');  //UploadedFile
-            $path = $file->store('/covers','public');
-            $request->merge([
-                'cover_image_path'=>$path,
-            ]);
+
+            $path = Classroom::uploadCoverImage($file);
+//            $request->merge([
+//                'cover_image_path'=>$path,
+//            ]);
+            $validated['cover_image_path'] = $path;
+
+
+//            $request->merge([
+//                'code'=>Str::random(8),
+//            ]);
+            $validated['code'] = Str::random(8);
         }
 
-        $request->merge([
-            'code'=>Str::random(8),
-        ]);
-        $classroom = Classroom::create($request->all());
+
+        $classroom = Classroom::create($validated);
 
 
         //After all Post process make PRG :Post Redirect Get
@@ -91,8 +103,12 @@ class ClassroomController extends Controller
         ]);
     }
 
-    public function update(Request $request,Classroom $classroom)
+    public function update(ClassroomRequest $request,Classroom $classroom)
     {
+
+        $validated = $request->validated();
+
+
         //$classroom = Classroom::findOrFail($id);
 //        $classroom->name = $request->post('name');
 //        $classroom->section = $request->post('section');
@@ -100,25 +116,49 @@ class ClassroomController extends Controller
 //        $classroom->room = $request->post('room');
 //        $classroom->save(); //insert
 
-        //Mass assignment
-          $classroom->update($request->all());
+        if ($request->hasFile('cover_image')){
+            $file = $request->file('cover_image');  //UploadedFile
+            //Solution 1:
+//            $name = $classroom->cover_image_path ?? (Str::random(40) . '.' . $file->getClientOriginalExtension());
+//            $path = $file->storeAs('/covers',basename($name),[
+//                'disk'=>Classroom::$disk
+//            ]);
 
-//        $classroom->fill($request->all())->save();
+            //Solution 2:
+            $path = Classroom::uploadCoverImage($file);
+
+//            $request->merge([
+//                'cover_image_path'=>$path,
+//            ]);
+
+            $validated['cover_image_path'] = $path;
+        }
+
+        //Mass assignment
+        $classroom->update($validated);
+
+        //Solution 2: cont ..
+        $old = $classroom->cover_image_path;
+        if ($old && $old != $classroom->cover_image_path){
+            Classroom::deleteCoverImage($old);
+        }
+
+        //$classroom->fill($request->all())->save();
+
         return Redirect::route('classrooms.index')
             ->with('success','Classroom Updated!');
     }
 
-    public function destroy($id)
+    public function destroy(Classroom $classroom)
     {
-        Classroom::destroy($id);
-
+//        Classroom::destroy($id);
 //        Classroom::where('id','=',$id)->delete();
 
 //        $classroom = Classroom::find($id);
-//        $classroom->delete();
+        $classroom->delete();
+        Classroom::deleteCoverImage($classroom->cover_image_path);
 
         return redirect(route('classrooms.index'))
             ->with('success','Classroom Deleted!');
-
     }
 }
