@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TopicsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,37 +16,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/','welcome');
 Route::get('/', function () {
     return view('welcome');
-      })->name('home');
-//
-//Route::get('/classrooms',[ClassroomController::class,'index'])
-//            ->name('classrooms.index');
-//
-//Route::get('/classrooms/create',[ClassroomController::class,'create'])
-//    ->name('classrooms.create');
-//
-//Route::post('/classrooms',[ClassroomController::class,'store'])
-//    ->name('classrooms.store');
-//
-//Route::get('/classrooms/{classroom}', [ClassroomController::class, 'show'])
-//    ->name('classrooms.show')
-//    ->where('classroom', '\d+');  // Regular expression for numeric values
-//    //->where('dark', 'yes|no'); // Only allow 'yes' or 'no' for the 'dark' parameter
-//
-//Route::get('/classrooms/{classroom}/edit', [ClassroomController::class, 'edit'])
-//    ->name('classrooms.edit')
-//    ->where('classroom', '\d+');
-//
-//Route::put('/classrooms/{classroom}', [ClassroomController::class, 'update'])
-//    ->name('classrooms.update')
-//    ->where('classroom', '\d+');
-//
-//Route::put('/classrooms/{classroom}', [ClassroomController::class, 'destroy'])
-//    ->name('classrooms.destroy')
-//    ->where('classroom', '\d+');
+})->name('home');
 
-Route::resource('/classrooms',ClassroomController::class)->names([
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified','password.confirm'])->name('dashboard');
 
-    ]);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
+Route::resources([
+    'topics'=>TopicsController::class,
+    'classrooms'=>ClassroomController::class
+],[
+    'middleware'=>['auth']
+]);

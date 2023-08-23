@@ -21,6 +21,11 @@ use Mockery\Generator\Method;
 
 class ClassroomController extends Controller
 {
+
+    public function __construct()
+    {
+
+    }
     //Action
     public function index(Request $request) : Renderable
     {
