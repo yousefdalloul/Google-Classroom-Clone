@@ -145,8 +145,11 @@ class ClassroomController extends Controller
 
         //$classroom->fill($request->all())->save();
 
-        return Redirect::route('classrooms.index')
-            ->with('success','Classroom Updated!');
+        Session::flash('success','Classroom updated!');
+        Session::flash('error','Test for error message!');
+        return Redirect::route('classrooms.index');
+            //->with('success','Classroom Updated!')
+            //->with('error','Classroom Updated!');
     }
 
     public function destroy(Classroom $classroom)

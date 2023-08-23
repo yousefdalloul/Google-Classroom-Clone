@@ -1,39 +1,38 @@
-<div class= "form-floating mb-3">
-    <input type="text" value="{{ old('name',$classroom->name) }}" @class(['form-control','is-invalid'=>$errors->has('name')]) name = "name" id="name" placeholder="Class Name">
-    <label for="name">Class Name</label>
-    @error('name')
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-<div class="form-floating mb-3">
-    <input type="text" value="{{ old('section',$classroom->section) }}" @class(['form-control','is-invalid'=>$errors->has('section')]) name="section" id="section" placeholder="Section">
-    <label for="section" >Section</label>
-    @error('section')
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-<div class="form-floating mb-3">
-    <input type="text" value="{{ old('subject',$classroom->subject) }}" @class(['form-control','is-invalid'=>$errors->has('subject')]) name = "subject" id="subject" placeholder="Subject">
-    <label for="subject">Subject</label>
-    @error('subject')
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-<div class="form-floating mb-3">
-    <input type="text" value="{{ old('room',$classroom->room) }}" @class(['form-control','is-invalid'=>$errors->has('room')]) name="room" id="room" placeholder="Room">
-    <label for="section" >Room</label>
-    @error('room')
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
-<div class="form-floating mb-3">
+<x-form.floating-control name="name" placeholder="Classroom Name">
+    <x-form.input name="name" value="{{ $classroom->name }}" placeholder="Classroom Name"></x-form.input>
+    <x-slot:label>
+        <label for="name">Classroom Name</label>
+    </x-slot:label>
+</x-form.floating-control>
+
+<x-form.floating-control name="name" placeholder="Classroom Section">
+    <x-form.input name="section" value="{{ $classroom->section }}" placeholder="Classroom Section"></x-form.input>
+    <x-slot:label>
+        <label for="section">Classroom Section</label>
+    </x-slot:label>
+</x-form.floating-control>
+
+<x-form.floating-control name="name" placeholder="Classroom Subject">
+    <x-form.input name="subject" value="{{ $classroom->subject }}" placeholder="Classroom Subject"></x-form.input>
+    <x-slot:label>
+        <label for="subject">Classroom Subject</label>
+    </x-slot:label>
+</x-form.floating-control>
+
+<x-form.floating-control name="name" placeholder="Classroom Room">
+    <x-form.input name="room" value="{{ $classroom->room }}" placeholder="Classroom Room"></x-form.input>
+    <x-slot:label>
+        <label for="room">Classroom Room</label>
+    </x-slot:label>
+</x-form.floating-control>
+
+<x-form.floating-control name="name" placeholder="Classroom Image">
     @if($classroom->cover_image_path)
     <img src="{{ Storage::disk('public')->url($classroom->cover_image_path) }}" alt="">
     @endif
-    <input type="file" @class(['form-control','is-invalid'=>$errors->has('cover_image')]) name="cover_image" id="cover_image" placeholder="Cover Image">
-    <label for="cover_image" >Cover Image</label>
-    @error('cover_image')
-    <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+    <x-form.input type="file" name="cover_image" value="{{ $classroom->cover_image }}" placeholder="Classroom Image"></x-form.input>
+        <x-slot:label>
+            <label for="cover_image">Classroom Image</label>
+        </x-slot:label>
+</x-form.floating-control>
 <button type="submit" class="btn btn-primary">{{ $button_label }}</button>

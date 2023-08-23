@@ -1,16 +1,10 @@
-@extends('layouts.master')
-
-@section('title','Classrooms')
-
-@section('content')
-
+<x-main-layout title="Classroom">
 <div class= "container">
     <h1>Classrooms</h1>
-    @if(session()->has('success'))
-        <div class="alert alert-success">
-            {{ session('success')}}
-        </div>
-    @endif
+
+    <x-alert name="success" id="success" class="alert-success"></x-alert>
+    <x-alert name="error" id="error" class="alert-danger"></x-alert>
+
     <div class="row">
         @foreach($classrooms as $classroom)
             <div class="col-md-3">
@@ -32,9 +26,9 @@
         @endforeach
     </div>
 </div>
-@endsection
 
 @push('scripts')
     <script>console.log('@@stack')</script>
 @endpush
 
+</x-main-layout>
