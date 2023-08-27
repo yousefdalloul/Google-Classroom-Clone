@@ -1,6 +1,6 @@
-<x-main-layout title="Classroom">
+<x-main-layout title="Classroom Trashed">
     <div class= "container">
-        <h1>Classrooms</h1>
+        <h1>Classrooms Trashed</h1>
 
         <x-alert name="success" id="success" class="alert-success"></x-alert>
         <x-alert name="error" id="error" class="alert-danger"></x-alert>
@@ -14,12 +14,15 @@
                             <h5 class="card-title">{{ $classroom->name }}</h5>
                             <p class="card-text">{{ $classroom->section }} - {{ $classroom->room }}</p>
                             <div class="d-flex justify-content-between">
-                                <a href="{{ route('classrooms.show',$classroom->id) }}" class="btn btn-primary">View</a>
-                                <a href="{{ route('classrooms.edit',$classroom->id) }}" class="btn btn-sm btn-dark">Edit</a>
-                                <form action="{{ route('classrooms.destroy',$classroom->id) }}" method="post">
+                                <form action="{{ route('classrooms.restore',$classroom->id) }}" method="post">
+                                    @csrf
+                                    @method('put')
+                                    <button type="submit" class="btn btn-sm btn-success"> Restore </button>
+                                </form>
+                                <form action="{{ route('classrooms.force-delete',$classroom->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger"> Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-danger">Force Delete</button>
                                 </form>
                             </div>
                         </div>

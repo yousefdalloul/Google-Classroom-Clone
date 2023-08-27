@@ -28,7 +28,7 @@
 
 <x-form.floating-control name="name" placeholder="Classroom Image">
     @if($classroom->cover_image_path)
-    <img src="{{ Storage::disk('public')->url($classroom->cover_image_path) }}" alt="">
+    <img src="{{ asset('storage/' . $classroom->cover_image_path) }}" alt="">
     @endif
     <x-form.input type="file" name="cover_image" value="{{ $classroom->cover_image }}" placeholder="Classroom Image"></x-form.input>
         <x-slot:label>

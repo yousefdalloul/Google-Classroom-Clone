@@ -10,6 +10,8 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
@@ -26,16 +28,23 @@ class ClassroomController extends Controller
     {
 
     }
+
     //Action
     public function index(Request $request) : Renderable
     {
         //return Collection of classroom
-        $classrooms = Classroom::orderBy('created_at','DESC')->get();
+        //$classrooms = DB::table('classroom')
+        //    ->whereNull('deleted_at')
+        //    ->orderBy('created_at','DESC')->get();
+        
+        $classrooms = Classroom::active()
+            ->recent()
+            ->orderBy('created_at','DESC')
+            ->get();
 
         $success = session('success'); //return value of success in the session
 
         return view('classrooms.index',compact('classrooms','success'));
-
     }
 
 
@@ -68,16 +77,17 @@ class ClassroomController extends Controller
             $file = $request->file('cover_image');  //UploadedFile
 
             $path = Classroom::uploadCoverImage($file);
-//            $request->merge([
-//                'cover_image_path'=>$path,
-//            ]);
-            $validated['cover_image_path'] = $path;
+            //  $request->merge([
+            //      'cover_image_path'=>$path,
+            //  ]);
+              $validated['cover_image_path'] = $path;
 
 
-//            $request->merge([
-//                'code'=>Str::random(8),
-//            ]);
+            // $request->merge([
+            //     'code'=>Str::random(8),
+            // ]);
             $validated['code'] = Str::random(8);
+            $validated['user_id'] = Auth::id(); //Auth::user()->id;  request()->user()->id;
         }
 
 
@@ -115,26 +125,26 @@ class ClassroomController extends Controller
 
 
         //$classroom = Classroom::findOrFail($id);
-//        $classroom->name = $request->post('name');
-//        $classroom->section = $request->post('section');
-//        $classroom->subject = $request->post('subject');
-//        $classroom->room = $request->post('room');
-//        $classroom->save(); //insert
+        // $classroom->name = $request->post('name');
+        // $classroom->section = $request->post('section');
+        // $classroom->subject = $request->post('subject');
+        // $classroom->room = $request->post('room');
+        // $classroom->save(); //insert
 
         if ($request->hasFile('cover_image')){
             $file = $request->file('cover_image');  //UploadedFile
             //Solution 1:
-//            $name = $classroom->cover_image_path ?? (Str::random(40) . '.' . $file->getClientOriginalExtension());
-//            $path = $file->storeAs('/covers',basename($name),[
-//                'disk'=>Classroom::$disk
-//            ]);
+            //$name = $classroom->cover_image_path ?? (Str::random(40) . '.' . $file->getClientOriginalExtension());
+            //$path = $file->storeAs('/covers',basename($name),[
+            //    'disk'=>Classroom::$disk
+            // ]);
 
             //Solution 2:
             $path = Classroom::uploadCoverImage($file);
 
-//            $request->merge([
-//                'cover_image_path'=>$path,
-//            ]);
+             // $request->merge([
+             //     'cover_image_path'=>$path,
+             // ]);
 
             $validated['cover_image_path'] = $path;
         }
@@ -159,14 +169,41 @@ class ClassroomController extends Controller
 
     public function destroy(Classroom $classroom)
     {
-//        Classroom::destroy($id);
-//        Classroom::where('id','=',$id)->delete();
+           //Classroom::destroy($id);
+           //Classroom::where('id','=',$id)->delete();
 
-//        $classroom = Classroom::find($id);
-        $classroom->delete();
-        Classroom::deleteCoverImage($classroom->cover_image_path);
+           //$classroom = Classroom::find($id);
+          $classroom->delete();
+           // Classroom::deleteCoverImage($classroom->cover_image_path);
 
         return redirect(route('classrooms.index'))
             ->with('success','Classroom Deleted!');
+    }
+
+    public function trashed()
+    {
+        $classrooms = Classroom::onlyTrashed()->latest('deleted_at')->get();
+
+        return view('classrooms.trashed',compact('classrooms'));
+    }
+
+    public function restore($id)
+    {
+        $classroom = Classroom::onlyTrashed()->findOrFail($id);
+        $classroom->restore();
+
+         return redirect()
+                ->route('classrooms.index')
+                ->with('success',"Classroom ({$classroom->name}) restord!");
+    }
+    public function forceDelete($id)
+    {
+        $classroom = Classroom::withTrashed()->findOrFail($id);
+        $classroom->forceDelete();
+        Classroom::deleteCoverImage($classroom->cover_image_path);
+
+        return redirect()
+            ->route('classrooms.trashed')
+            ->with('success',"Classroom ({$classroom->name}) deleted forever!");
     }
 }

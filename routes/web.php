@@ -32,9 +32,23 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Route::resources([
-    'topics'=>TopicsController::class,
-    'classrooms'=>ClassroomController::class
-],[
-    'middleware'=>['auth']
-]);
+Route::middleware('auth')->group(function (){
+    Route::prefix('/classrooms/trashed')
+        ->as('classrooms.')
+        ->controller(ClassroomController::class)
+        ->group(function (){
+
+            Route::get('/','trashed')->name('trashed');
+            Route::put('/{classroom}','restore')->name('restore');
+            Route::delete('/{classroom}','forceDelete')->name('force-delete');
+
+        });
+
+    Route::resources([
+        'topics'=>TopicsController::class,
+        'classrooms'=>ClassroomController::class
+    ]);
+
+});
+
+
