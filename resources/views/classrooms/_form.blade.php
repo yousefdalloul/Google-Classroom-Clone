@@ -1,3 +1,5 @@
+<x-alert name="error" id="error" class="alert-danger"></x-alert>
+
 <x-form.floating-control name="name" placeholder="Classroom Name">
     <x-form.input name="name" value="{{ $classroom->name }}" placeholder="Classroom Name"></x-form.input>
     <x-slot:label>

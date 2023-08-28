@@ -93,8 +93,8 @@ class ClassroomController extends Controller
             // ]);
 
 
-        $validated['code'] = Str::random(8);
-        $validated['user_id'] = Auth::id(); //Auth::user()->id;  request()->user()->id;
+        //$validated['code'] = Str::random(8);
+        //$validated['user_id'] = Auth::id(); //Auth::user()->id;  request()->user()->id;
 
         DB::beginTransaction();
         try {
