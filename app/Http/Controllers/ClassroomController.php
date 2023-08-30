@@ -29,7 +29,7 @@ class ClassroomController extends Controller
 
     public function __construct()
     {
-
+        $this->middleware('auth');
     }
 
     //Action
@@ -95,10 +95,10 @@ class ClassroomController extends Controller
 
         //$validated['code'] = Str::random(8);
         //$validated['user_id'] = Auth::id(); //Auth::user()->id;  request()->user()->id;
-
+        $validated = $request->validated();
         DB::beginTransaction();
         try {
-            $classroom = Classroom::create( $validated );
+            $classroom = Classroom::create($validated);
 
             $classroom->join(Auth::id(),'teacher');
 
@@ -110,7 +110,7 @@ class ClassroomController extends Controller
                 ->withInput();
         }
 
-        $classroom = Classroom::create($validated);
+//        $classroom = Classroom::create($validated);
 
 
         //After all Post process make PRG :Post Redirect Get
@@ -132,7 +132,6 @@ class ClassroomController extends Controller
                     'classroom'=> $classroom ,
                     'invitation_link' => $invitation_link
                 ]);
-
     }
 
     public function edit(Classroom $classroom)

@@ -7,6 +7,7 @@ use App\Observers\ClassroomObserver;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -72,6 +73,18 @@ class Classroom extends Model
             $classroom->save();
         });
     }
+
+    public function classworks(): HasMany
+    {
+        return $this->hasMany(Classwork::class,'classroom_id','id');
+    }
+
+    public function topics(): HasMany
+    {
+        return $this->hasMany(Topic::class);
+    }
+
+
 
     //local scope
     public function scopeActive(Builder $query)

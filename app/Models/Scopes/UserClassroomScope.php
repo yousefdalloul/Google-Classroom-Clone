@@ -24,16 +24,18 @@ class UserClassroomScope implements Scope
                         ->whereExists(function (QueryBuilder $query) use ($id){
                             $query->select(DB::raw('1'))
                                 ->from('classroom_user')
-                                ->whereColumn('classroom_id','=','classroom')
+                                ->whereColumn('classroom_id','=','classrooms.id')
                                 ->where('user_id','=',$id);
                         });
                 });
 
-//
-//                ->orWhereRaw('classroom.id in (select classroom_id from classroom_user where user_id = ? )',[
-//                    $id
-//                ]);
+
+        //->orWhereRaw('classroom.id in (select classroom_id from classroom_user where user_id = ? )',[
+        //      $id
+        //]);
+
         }
+
         //select * from classrooms
         //where user_id = ?
         //or classroom.id in (select classroom_id from classroom_user where user_id = ? )

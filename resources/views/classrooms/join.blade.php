@@ -2,7 +2,7 @@
     <div class="d-flex align-items-center justify content center vh100">
         <h2 class="mb-4">{{ $classroom->name }}</h2>
         <div class="border p-5 text-center">
-            <form class="" action="{{ route('classrooms.join'),$classroom->id }}" method="post">
+            <form class="" action="{{ route('classrooms.join', ['classroom' => $classroom->id]) }}" method="post">
                 @csrf
                 <button type="submit" class="btn btn-primary">{{__('Join')}}</button>
             </form>
