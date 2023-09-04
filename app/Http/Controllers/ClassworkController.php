@@ -7,6 +7,8 @@ use App\Models\Classwork;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Topic;
+use Illuminate\Support\Facades\DB;
+
 class ClassworkController extends Controller
 {
     /**
@@ -71,7 +73,10 @@ class ClassworkController extends Controller
             'classroom_id' => $classroom->id,
         ]);
 
-        $classwork = $classroom->classworks()->create($request->all());
+        DB::transaction(function () use ($classroom, $request){
+            $classwork = $classroom->classworks()->create($request->all());
+            $classroom->users()->attach($request->input('students'));
+        });
 
         return redirect()->route('classrooms.classworks.index', ['classroom' => $classroom->id])
             ->with('success', 'Classwork created!');
@@ -89,9 +94,12 @@ class ClassworkController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Classroom $classroom, Classwork $classwork)
+    public function edit(Request $request, Classroom $classroom, Classwork $classwork)
     {
-        //
+        $type = $this->getType($request);
+        $assigned = $classwork->users->pluck('id');
+
+        return view('classworks.create',compact('classroom','type'));
     }
 
     /**
@@ -99,7 +107,12 @@ class ClassworkController extends Controller
      */
     public function update(Request $request, Classroom $classroom, Classwork $classwork)
     {
-        //
+        $classwork->update($request->all());
+        $classwork->users()->sync($request->input('students'));
+
+        return back()
+            ->with('success','Classwork Update!');
+
     }
 
     /**

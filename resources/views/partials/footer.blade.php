@@ -6,8 +6,11 @@
             <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
         </a>
         <span class="mb-3 mb-md-0 text-body-secondary">© 2023 {{ config('app.name') }}, By: Yousef Asad Dalloul </span>
+<<<<<<< HEAD
         <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
 
+=======
+>>>>>>> 3a88a77 (Model Accessors, Mutators and Events)
     </div>
 
     <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">

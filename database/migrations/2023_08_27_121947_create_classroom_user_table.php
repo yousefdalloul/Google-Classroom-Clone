@@ -15,7 +15,7 @@ return new class extends Migration
             $table->foreignId('classroom_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->enum('role',['student','teacher'])->default('student');
-            $table->timestamp('created_at');
+            $table->timestamp('created_ at');
 
             $table->primary(['classroom_id','user_id']);
         });

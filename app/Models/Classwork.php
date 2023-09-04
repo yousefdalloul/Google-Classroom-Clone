@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Classwork extends Model
 {
@@ -30,5 +31,11 @@ class Classwork extends Model
         {
             return $this->belongsTo(Topic::class, 'topic_id', 'id');
         }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)
+            ->withPivot(['grade','submitted_at','status','created_at']);
+    }
 
 }
