@@ -24,6 +24,10 @@ class Classroom extends Model
         'name','section','subject','room','theme','cover_image_path','code','user_id'
     ];
 
+    protected $appends = [
+        'cover_image_url'
+    ];
+
     public function getRouteKeyName()
     {
         return 'id';
@@ -85,6 +89,12 @@ class Classroom extends Model
     {
         return $this->hasMany(Topic::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 
     public function users(): BelongsToMany
     {
