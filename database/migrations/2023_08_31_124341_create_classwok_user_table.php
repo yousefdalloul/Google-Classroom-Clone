@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('classwok_user', function (Blueprint $table) {
-            $table->foreignId('classwork_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('classwork_id')->constrained('classworks')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->float('grade')->nullable();
             $table->timestamp('submitted_at')->nullable();

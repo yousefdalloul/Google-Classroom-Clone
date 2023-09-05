@@ -73,9 +73,18 @@ class ClassworkController extends Controller
             'classroom_id' => $classroom->id,
         ]);
 
-        DB::transaction(function () use ($classroom, $request){
+        DB::transaction(function () use ($classroom, $request) {
+
             $classwork = $classroom->classworks()->create($request->all());
-            $classroom->users()->attach($request->input('students'));
+
+            $studentIds = $request->input('students');
+            $existingStudentIds = $classroom->users->pluck('id')->toArray();
+
+            // Filter out students that are already attached to the classroom
+            $newStudentIds = array_diff($studentIds, $existingStudentIds);
+
+            // Attach the remaining students
+            $classroom->users()->attach($newStudentIds);
         });
 
         return redirect()->route('classrooms.classworks.index', ['classroom' => $classroom->id])
@@ -88,7 +97,9 @@ class ClassworkController extends Controller
      */
     public function show(Classroom $classroom, Classwork $classwork)
     {
-        //
+        //$classwork->load('comments.user');
+        return view('classworks.show',compact('classroom','classwork'));
+        
     }
 
     /**

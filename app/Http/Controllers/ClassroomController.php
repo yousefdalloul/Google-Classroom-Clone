@@ -25,7 +25,11 @@ class ClassroomController extends Controller
     public function index(Request $request) : Renderable
     {
         //return Collection of classroom
-        $classrooms = Classroom::orderBy('created_at','DESC')->get();
+        $classrooms = Classroom::active()
+                    ->recent()
+                    ->orderBy('created_at','DESC')
+                    //->WithoutGlobalScope(UserClassroomScope)
+                    ->get();
 
         $success = session('success'); //return value of success in the session
 
@@ -43,6 +47,7 @@ class ClassroomController extends Controller
 
     public function store(ClassroomRequest $request) : RedirectResponse
     {
+        $validated = $request->validated();
 
         //Method 1
         $classroom = new Classroom();
@@ -86,13 +91,15 @@ class ClassroomController extends Controller
 
     public function show(Classroom $classroom)
     {
-        // $classroom = Classroom::where('id','=',$id)->first();
-        //$classroom = Classroom::findOrFail($id);
+        $invitation_link = route('classrooms.join', [
+            'classroom' => $classroom->id,
+            'code' => $classroom->code,
+        ]);
 
-        return View::make('classrooms.show')
-                ->with([
-                    'classroom'=> $classroom ,
-                ]);
+        return View::make('classrooms.show')->with([
+            'classroom' => $classroom,
+            'invitation_link' => $invitation_link,
+        ]);
     }
 
     public function edit(Classroom $classroom)

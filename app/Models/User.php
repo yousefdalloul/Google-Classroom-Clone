@@ -71,7 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
             'user_id',               //FK for related model in pivot model
             'id',                        //PK for current model
             'id'                         //PK for related model
-        )->withPivot(['role','created_at']);
+        )->withPivot(['role']);
     }
     public function cratedClassrooms()
     {
@@ -80,6 +80,12 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function classworks()
     {
-
+        return $this->belongsToMany(Classwork::class)
+            ->using(ClassworkUser::class)
+            ->withPivot(['grade','status','submitted_at','created_at']);
+    }
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }

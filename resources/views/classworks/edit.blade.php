@@ -19,7 +19,7 @@
                         <x-slot:label>
                             <label for="description">Description (Optional)</label>
                         </x-slot:label>
-                        <x-form.input name="description" :value="$classwork->description" placeholder="Description (Optional)"></x-form.input>
+                        <x-form.textarea name="description" :value="$classwork->description" placeholder="Description (Optional)"></x-form.textarea>
                     </x-form.floating-control>
                 </div>
                 <div>

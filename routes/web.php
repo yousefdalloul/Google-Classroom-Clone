@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ClassworkController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TopicsController;
@@ -61,6 +62,9 @@ Route::middleware('auth')->group(function (){
             ->name('classrooms.people');
     Route::delete('classrooms/{classroom}/people',[ClassroomPeopleController::class,'destroy'])
             ->name('classrooms.people.destroy');
+
+    Route::post('comments',[CommentController::class,'store'])
+        ->name('comments.store');
 });
 
 require __DIR__.'/auth.php';

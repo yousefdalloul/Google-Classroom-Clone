@@ -95,7 +95,7 @@ class Classroom extends Model
             'user_id',               //FK for related model
             'id',                        //PK for current model
             'id'                         //PK for related model
-        )->withPivot(['role','created_at']);
+        )->withPivot(['role']);
     }
 
 
