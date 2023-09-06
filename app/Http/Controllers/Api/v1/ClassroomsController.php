@@ -8,6 +8,7 @@ use App\Http\Resources\ClassroomResource;
 use App\Models\Classroom;
 use Couchbase\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Unique;
@@ -19,6 +20,10 @@ class ClassroomsController extends Controller
      */
     public function index()
     {
+        if (!Auth::guard('sanctum')->user()->tokenCan('classrooms.read')){
+            abort(403);
+        }
+
         $classroom = Classroom::with('user:id,name','topics')
             ->withCount('students as students')
             ->paginate(2);
@@ -30,6 +35,10 @@ class ClassroomsController extends Controller
      */
     public function store(Request $request)
     {
+        if (!Auth::guard('sanctum')->user()->tokenCan('classrooms.create')){
+            abort(403);
+        }
+
         $request->validate([
             'name'=>['required'],
         ]);
@@ -54,6 +63,10 @@ class ClassroomsController extends Controller
     //  Model binding
     public function show(Classroom $classroom)
     {
+        if (!Auth::guard('sanctum')->user()->tokenCan('classrooms.read')){
+            abort(403);
+        }
+
         $classroom->load('user')->loadCount('students');
         return new ClassroomResource($classroom);
     }
@@ -63,6 +76,10 @@ class ClassroomsController extends Controller
      */
     public function update(Request $request, Classroom $classroom)
     {
+        if (!Auth::guard('sanctum')->user()->tokenCan('classrooms.update')){
+            abort(403);
+        }
+
         $request->validate([
             'name'=>['sometimes','required',Rule::unique('classrooms','name')->ignore($classroom->id)],
             'section'=>['sometimes','required']
@@ -82,6 +99,10 @@ class ClassroomsController extends Controller
      */
     public function destroy(string $id)
     {
+        if (!Auth::guard('sanctum')->user()->tokenCan('classrooms.delete')){
+            abort(403,'You cannot delete this classroom');
+        }
+
         Classroom::destroy($id);
         return Response::json([],204);
         //        return [

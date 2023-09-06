@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
 //        ResourceCollection::withoutWrapping();
 
-        Relation::enforceMorphMap([
+        Relation::morphMap([
             'post'=>Post::class,
             'classwork'=> Classwork::class,
         ]);

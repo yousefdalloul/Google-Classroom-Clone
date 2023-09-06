@@ -31,7 +31,16 @@
     </div>
 
     @push('scripts')
-        <script>console.log('@@stack')</script>
+        <script>
+            fetch('/api/v1/classrooms')
+                .then(res => res.json())
+                .then(json => {
+                  let ul = document.getElementById('classrooms');
+                  for(let i in json.data){
+                      ul.innerHTML += `<li>${json.data[i].name}</li>`
+                  }
+                })
+        </script>
     @endpush
 
 </x-main-layout>

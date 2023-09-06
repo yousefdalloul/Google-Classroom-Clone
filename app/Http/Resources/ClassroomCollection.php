@@ -15,21 +15,23 @@ class ClassroomCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return [
-            'id'=>$this->id,
-            'name' => $this->name,
-            'code' => $this->code,
-            'cover_image'=> $this->cover_image_url,
-            'meta' => [
-                'section'       => $this->section,
-                'room'          => $this->room,
-                'subject'       => $this->subject,
-                'student_count' => $this->student_count ?? 0,
-                'theme'         => $this->theme,
-            ],
-            'user'=>[
-                'name' =>$this->user->name,
-            ],
-        ];
+        $data = $this->collection->map(function ($model) {
+            return [
+                'id' => $model->id,
+                'name' => $model->name,
+                'code' => $model->code,
+                'cover_image' => $model->cover_image_url,
+                'meta' => [
+                    'section' => $model->section,
+                    'room' => $model->room,
+                    'subject' => $model->subject,
+                    'student_count' => $model->student_count ?? 0,
+                    'theme' => $model->theme,
+                ],
+                'user' => [
+                    'name' => $model->user?->name,
+                ],
+            ];
+        });
     }
 }
