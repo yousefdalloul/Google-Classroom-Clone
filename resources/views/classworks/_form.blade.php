@@ -1,40 +1,71 @@
-<x-alert name="error" id="error" class="alert-danger"></x-alert>
+<x-alert name="error" type="danger"/>
 
-<x-form.floating-control name="name" placeholder="Classroom Name">
-    <x-form.input name="name" value="{{ $classroom->name }}" placeholder="Classroom Name"></x-form.input>
-    <x-slot:label>
-        <label for="name">Classroom Name</label>
-    </x-slot:label>
-</x-form.floating-control>
+@if($errors->any())
+    <div class="alert alert-danger">
+        @foreach($errors->all() as $message)
+            <li>{{$message}}</li>
+        @endforeach
+    </div>
+@endif
 
-<x-form.floating-control name="name" placeholder="Classroom Section">
-    <x-form.input name="section" value="{{ $classroom->section }}" placeholder="Classroom Section"></x-form.input>
-    <x-slot:label>
-        <label for="section">Classroom Section</label>
-    </x-slot:label>
-</x-form.floating-control>
+<div class="row">
+    <div class="col-md-8">
+        <x-form.floating-control name="title">
+            <x-slot:label>
+                <label for="title">Title</label>
+            </x-slot:label>
+            <x-form.input name="title" :value="$classwork->title" placeholder="Title"></x-form.input>
+        </x-form.floating-control>
+        <x-form.floating-control name="description">
+            <x-slot:label>
+                <label for="description">Description (Optional)</label>
+            </x-slot:label>
+            <x-form.textarea name="description" :value="$classwork->description" placeholder="Description (Optional)"></x-form.textarea>
+        </x-form.floating-control>
+    </div>
+    <div class="col-md-4">
+        <x-form.floating-control name="published_at">
+            <x-slot:label>
+                <label for="published_at">Published Date</label>
+            </x-slot:label>
+            <x-form.input name="published_at" :value="$classwork->published_data" type="date"></x-form.input>
+        </x-form.floating-control>
+        <div class="mb-3">
+        @foreach($classroom->students as $student)
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="students[]" value="{{ $student->id }}" id="std-{{ $student->id }}" @checked(in_array(!isset($assigned) || $student->id,$assigned ?? []))>
+                <label class="form-check-label" for="std-{{ $student->id }}">
+                    {{ $student->name }}
+                </label>
+            </div>
+        @endforeach
+        </div>
+        @if($type == 'assignment')
+            <x-form.floating-control name="options.grade">
+                <x-slot:label>
+                    <label for="grade">Grade</label>
+                </x-slot:label>
+                <x-form.input name="options[grade]" :value="$classwork->options['grade'] ?? ''" type="number" min="0"></x-form.input>
+            </x-form.floating-control>
+            <x-form.floating-control name="options.due">
+                <x-slot:label>
+                    <label for="due">Due</label>
+                </x-slot:label>
+                <x-form.input name="options[due]" :value="$classwork->options['due'] ?? ''" type="date"></x-form.input>
+            </x-form.floating-control>
+        @endif
 
-<x-form.floating-control name="name" placeholder="Classroom Subject">
-    <x-form.input name="subject" value="{{ $classroom->subject }}" placeholder="Classroom Subject"></x-form.input>
-    <x-slot:label>
-        <label for="subject">Classroom Subject</label>
-    </x-slot:label>
-</x-form.floating-control>
+        <x-form.floating-control name="topic_id">
+            <x-slot:label>
+                <label for="topic_id">Topic (Optional)</label>
+            </x-slot:label>
+            <select class="form-select" name="topic_id" id="topic_id">
+                @foreach ($classroom->topics as $topic)
+                    <option @selected($topic->id == $classwork->topic_id) value="{{ $topic->id }}">{{ $topic->name }}</option>
+                @endforeach
+                <option value="">No Topic</option>
+            </select>
+        </x-form.floating-control>
 
-<x-form.floating-control name="name" placeholder="Classroom Room">
-    <x-form.input name="room" value="{{ $classroom->room }}" placeholder="Classroom Room"></x-form.input>
-    <x-slot:label>
-        <label for="room">Classroom Room</label>
-    </x-slot:label>
-</x-form.floating-control>
-
-<x-form.floating-control name="name" placeholder="Classroom Image">
-    @if($classroom->cover_image_path)
-    <img src="{{ asset('storage/' . $classroom->cover_image_path) }}" alt="">
-    @endif
-    <x-form.input type="file" name="cover_image" value="{{ $classroom->cover_image }}" placeholder="Classroom Image"></x-form.input>
-        <x-slot:label>
-            <label for="cover_image">Classroom Image</label>
-        </x-slot:label>
-</x-form.floating-control>
-<button type="submit" class="btn btn-primary">{{ $button_label }}</button>
+    </div>
+</div>

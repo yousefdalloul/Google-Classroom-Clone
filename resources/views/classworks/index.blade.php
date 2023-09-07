@@ -14,30 +14,40 @@
             </div>
         </h3>
         <hr>
-        @forelse($classworks as $group)
-            @if ($group->first()->topic)
-                <h3>{{ $group->first()->topic->name }}</h3>
+        <form action="{{ URL::current() }}" method="get" class="row row-cols-lg-auto g-3 align-items-center">
+            <div class="col-12">
+                <input type="text" placeholder="Search..." name="search" class="form-control">
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary ms-2" type="submit">Find</button>
+            </div>
+        </form>
+
+{{--                <h3>{{ $group->first()->topic->name }}</h3>--}}
                 <div class="accordion accordion-flush" id="accordionFlushExample">
-                    @foreach($group as $classwork)
+                    @foreach($classworks as $classwork)
                         <div class="accordion-item">
                             <h2 class="accordion-header">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#flush-collapse{{ $classwork->id }}" aria-expanded="false" aria-controls="flush-collapse{{ $classwork->id }}">
-                                    {{ $classwork->title }} - {{ $classwork->topic->name }}
+                                    {{ $classwork->title }}
                                 </button>
                             </h2>
                             <div id="flush-collapse{{ $classwork->id }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
                                     {{ $classwork->description }}
+                                    <div>
+                                        <a class="btn btn-sm btn-outline-dark" href="{{ route('classrooms.classworks.edit',[$classwork->classroom_id,$classwork->id]) }}">Edit</a>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
-            @endif
-        @empty
-            <p class="text-center fs-3">No classworks found.</p>
-        @endforelse
-
+{{--        @empty--}}
+{{--            <p class="text-center fs-3">No classworks found.</p>--}}
+{{--        @endforelse--}}
+        {{ $classworks->withQueryString()->appends(['v1'=>1,])->links() }}
     </div>
 </x-main-layout>

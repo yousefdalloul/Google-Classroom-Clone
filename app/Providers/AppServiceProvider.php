@@ -6,6 +6,7 @@ use App\Models\Classwork;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -24,8 +25,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 //        ResourceCollection::withoutWrapping();
-
-        Relation::morphMap([
+        Paginator::defaultView('vendor.pagination.bootstrap-5');
+        Paginator::defaultSimpleView('vendor.pagination.simple-bootstrap-5');
+        Paginator::useBootstrapFive();
+        Relation::enforceMorphMap([
             'post'=>Post::class,
             'classwork'=> Classwork::class,
         ]);

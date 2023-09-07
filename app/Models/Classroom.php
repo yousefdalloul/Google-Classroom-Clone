@@ -170,7 +170,7 @@ class Classroom extends Model
         if ($this->cover_image_path){
             return Storage::disk(static::$disk)->url($this->cover_image_path);
         }
-        return 'https://placehold.co/800x300';
+        return 'https://gstatic.com/classroom/themes/img_code.jpg';
     }
 
     //Accessor: url => {{ route('classrooms.show',$classroom->id) }}
