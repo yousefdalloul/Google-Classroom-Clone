@@ -1,45 +1,70 @@
 <x-main-layout title="Create Classwork">
-    <div class= "container">
+    <div class="container">
         <h1>{{ $classroom->name }} (#{{ $classroom->id }})</h1>
         <h3>{{ $classwork->title }}</h3>
         <x-alert name="success" id="success" class="alert-success"></x-alert>
+        <x-alert name="error" id="success" class="alert-danger"></x-alert>
         <hr>
-        <div>
-            <p>{{ $classwork->discription }}</p>
-        </div>
-        <h4>Comments</h4>
-        <form action="{{ route('comments.store') }}" method="post">
-            @csrf
-            <input type="hidden" name="id" value="{{ $classwork->id }}">
-            <input type="hidden" name="type" value="classwork">
-            <div class="d-flex">
-                <div class="col-8">
-                <x-form.floating-control name="description">
-                    <x-slot:label>
-                        <label for="description">Comment</label>
-                    </x-slot:label>
-                    <x-form.textarea name="content" placeholder="Comment"></x-form.textarea>
-                </x-form.floating-control>
-                </div>
-                <div class="ms-1">
-                    <button type="submit" class="btn btn-primary">Comment</button>
+        <div class="row">
+            <div class="col-md-8">
+                <p>{{ $classwork->discription }}</p>
+                <h4>Comments</h4>
+                <form action="{{ route('comments.store') }}" method="post">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $classwork->id }}">
+                    <input type="hidden" name="type" value="classwork">
+                    <div class="d-flex">
+                        <div class="col-8">
+                            <x-form.floating-control name="description">
+                                <x-slot:label>
+                                    <label for="description">Comment</label>
+                                </x-slot:label>
+                                <x-form.textarea name="content" placeholder="Comment"></x-form.textarea>
+                            </x-form.floating-control>
+                        </div>
+                        <div class="ms-1">
+                            <button type="submit" class="btn btn-primary">Comment</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="mt-4">
+                    @foreach ($classwork->comments as $comment)
+                        <div>
+                            <div class="col-md-2">
+                                <img src="">
+                            </div>
+                            <div class="col-md-10">
+                                <p>By: {{ $comment->user->name }}. Time: {{ $comment->created_at->diffForHumans() }}</p>
+                                <p>By: Unknown User. Time: {{ $comment->created_at }}</p>
+                                <p>{{ $comment->content }}</p>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
-        </form>
-        <div class="mt-4">
-            @foreach ($classwork->comments as $comment)
-                <div>
-                    <div class="col-md-2">
-                        <img src="">
-                    </div>
-                    <div class="col-md-10">
-                            <p>By: {{ $comment->user->name }}. Time: {{ $comment->created_at->diffForHumans() }}</p>
-                            <p>By: Unknown User. Time: {{ $comment->created_at }}</p>
-                        <p>{{ $comment->content }}</p>
-                    </div>
+            <div class="col-md-4">
+                <div class="bordered rounded p-3 bg-light">
+                    <h4>Submissions</h4>
+                    @if($submissions->count())
+                        <ul>
+                            @foreach($submissions as $submission)
+                                <li><a href="{{ route('submissions.file',$submission->id) }}">File #{{ $loop->iteration }}</a></li>
+                            @endforeach
+                        </ul>
+                    @else
+                    <form action="{{ route('submissions.store',$classwork->id) }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <x-form.floating-control name="files">
+                            <x-slot:label>
+                                <label for="files">Upload Files</label>
+                            </x-slot:label>
+                            <x-form.input type="file" name="files[]" multiple accept="image/*,application/pdf" placeholder="Select Files"></x-form.input>
+                        </x-form.floating-control>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                    @endif
                 </div>
-            @endforeach
+            </div>
         </div>
-
     </div>
 </x-main-layout>

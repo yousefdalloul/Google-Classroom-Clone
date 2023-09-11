@@ -12,10 +12,10 @@ class CommentController extends Controller
         $request->validate([
             'content' => ['required','string'],
             'id'=>['required','int'],
-            'type'=>['required','in:classwork,post']
+            'type'=>['required','in:classwork,post'],
         ]);
         Auth::user()->comments()->create([
-            'user_id' => Auth::id(), // Set the user ID when creating the comment
+            'user_id' => Auth::id(),
             'commentable_id' => $request->input('id'),
             'commentable_type' => $request->input('type'),
             'content' => $request->input('content'),

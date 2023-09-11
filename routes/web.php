@@ -6,6 +6,7 @@ use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\TopicsController;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +66,12 @@ Route::middleware('auth')->group(function (){
 
     Route::post('comments',[CommentController::class,'store'])
         ->name('comments.store');
+
+    Route::post('classwork/{classwork}/submissions',[SubmissionController::class,'store'])
+        ->name('submissions.store');
+
+    Route::get('/submissions/{submission}',[SubmissionController::class,'file'])
+        ->name('submissions.file');
 });
 
 require __DIR__.'/auth.php';

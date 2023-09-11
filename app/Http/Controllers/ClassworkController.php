@@ -20,8 +20,8 @@ class ClassworkController extends Controller
     {
         $classworks = $classroom->classworks()
             ->with('topic') // Eager loading
-            ->filter($request->query())
-            ->orderBy('published_at')   //Query Builder
+            ->filter($request->query())      //ScopeFilter
+            ->latest('published_at','DEC')   //Query Builder
             // if ($request->search){
             //     $query->where('title','LIKE',"%{$request->search}%")
             //           ->orWhere('description','LIKE',"%{$request->search}%");
@@ -119,8 +119,13 @@ class ClassworkController extends Controller
      */
     public function show(Classroom $classroom, Classwork $classwork)
     {
+        $submissions = Auth::user()
+            ->submissions()
+            ->where('classwork_id',$classwork->id)
+            ->get();
+
         //$classwork->load('comments.user');
-        return view('classworks.show',compact('classroom','classwork'));
+        return view('classworks.show',compact('classroom','classwork','submissions'));
         
     }
 
