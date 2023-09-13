@@ -21,9 +21,16 @@ use Mockery\Generator\Method;
 
 class ClassroomController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->authorizeResource(Classroom::class);
+    }
+
     //Action
     public function index(Request $request) : Renderable
     {
+        $this->authorize('viewAny',Classroom::class);
         //return Collection of classroom
         $classrooms = Classroom::active()
                     ->recent()

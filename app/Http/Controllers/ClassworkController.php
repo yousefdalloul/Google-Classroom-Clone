@@ -19,6 +19,8 @@ class ClassworkController extends Controller
      */
     public function index(Request $request,Classroom $classroom)
     {
+        $this->authorize('viewAny',[Classwork::class,$classroom]);
+
         $classworks = $classroom->classworks()
             ->with('topic') // Eager loading
             ->filter($request->query())      //ScopeFilter
@@ -58,11 +60,12 @@ class ClassworkController extends Controller
      */
     public function create(Request $request,Classroom $classroom)
     {
+        $this->authorize('create',[Classwork::class,$classroom]);
 
-        $response = Gate::inspect('classworks.create',[$classroom]);
-        if (!$response->allowed()){
-            abort(403,$response->message());
-        }
+//        $response = Gate::inspect('classworks.create',[$classroom]);
+//        if (!$response->allowed()){
+//            abort(403,$response->message());
+//        }
 //        Gate::authorize('classworks.create',[$classroom]);
 
 //        if (!Gate::allows('classworks.create',[$classroom])){
@@ -80,9 +83,11 @@ class ClassworkController extends Controller
      */
     public function store(Request $request, Classroom $classroom)
     {
-        if (Gate::denies('classworks.create',[$classroom])){
-            abort(403);
-        }
+        $this->authorize('create',[Classwork::class,$classroom]);
+
+//        if (Gate::denies('classworks.create',[$classroom])){
+//            abort(403);
+//        }
         $type = $this->getType($request);
 
         $request->validate([
@@ -103,8 +108,6 @@ class ClassworkController extends Controller
 
         try {
             DB::transaction(function () use ($classroom, $request, $type) {
-
-
                 $classwork = $classroom->classworks()->create($request->all());
 
 //                $studentIds = $request->input('students');
@@ -122,10 +125,8 @@ class ClassworkController extends Controller
             return back()->with('error',$e->getMessage());
         }
 
-
         return redirect()->route('classrooms.classworks.index', ['classroom' => $classroom->id])
             ->with('success', 'Classwork created!');
-
     }
 
     /**
@@ -133,7 +134,8 @@ class ClassworkController extends Controller
      */
     public function show(Classroom $classroom, Classwork $classwork)
     {
-        Gate::authorize('classworks.view',[$classwork]);
+        $this->authorize('view',$classwork);
+//        Gate::authorize('classworks.view',[$classwork]);
 
         $submissions = Auth::user()
             ->submissions()
@@ -142,7 +144,6 @@ class ClassworkController extends Controller
 
         //$classwork->load('comments.user');
         return view('classworks.show',compact('classroom','classwork','submissions'));
-        
     }
 
     /**
@@ -150,7 +151,9 @@ class ClassworkController extends Controller
      */
     public function edit(Request $request, Classroom $classroom, Classwork $classwork)
     {
-        $type = $classwork->type;
+        $this->authorize('update',$classwork);
+        $type = $classwork->type->value;
+
         $assigned = $classwork->users()->pluck('id')->toArray();
 
         return view('classworks.edit',compact('classroom','classwork','assigned','type'));
@@ -161,6 +164,8 @@ class ClassworkController extends Controller
      */
     public function update(Request $request, Classroom $classroom, Classwork $classwork)
     {
+        $this->authorize('update',$classwork);
+
         $type = $classwork->type;
 
         $request->validate([
@@ -182,8 +187,8 @@ class ClassworkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Classwork $classwork)
+    public function destroy(Classroom $classroom, Classwork $classwork)
     {
-        //
+        $this->authorize('delete',$classwork);
     }
 }

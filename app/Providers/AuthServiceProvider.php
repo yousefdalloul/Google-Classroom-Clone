@@ -7,6 +7,7 @@ use App\Models\Classroom;
 use App\Models\Classwork;
 use App\Models\Scopes\UserClassroomScope;
 use App\Models\User;
+use App\Policies\ClassworkPolicy;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -20,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+
     ];
 
     /**
@@ -35,6 +36,7 @@ class AuthServiceProvider extends ServiceProvider
            }
         });
 
+        /*
         Gate::define('classworks.view',function (User $user,Classwork $classwork){
             $teacher = $user->classrooms()
                 ->wherePivot('classroom_id','=',$classwork->classroom_id)
@@ -84,5 +86,6 @@ class AuthServiceProvider extends ServiceProvider
                 ->exists();
 
         });
+    */
     }
 }

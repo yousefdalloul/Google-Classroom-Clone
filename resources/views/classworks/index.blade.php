@@ -2,10 +2,10 @@
     <div class="container">
         <h1>{{ $classroom->name }} (#{{ $classroom->id }})</h1>
         <h3>Classwork
-            @can('classworks.create',[$classroom])
+            @can('create',['App\Models\Classwork',$classroom])
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    Create
+                   + Create
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="{{ route('classrooms.classworks.create',[$classroom->id, 'type' => 'assignment']) }}">Assignment</a></li>
