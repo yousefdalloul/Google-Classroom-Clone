@@ -64,12 +64,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function classrooms(): BelongsToMany
     {
         return $this->belongsToMany(
-            User::class,                   //Related Model
-            'classroom_user',               //Pivot table
-            'classroom_id',          //FK for current model in pivot model
-            'user_id',               //FK for related model in pivot model
-            'id',                        //PK for current model
-            'id'                         //PK for related model
+            User::class,                   // Related Model
+            'classroom_user',               // Pivot table
+            'user_id',               // FK for current model in pivot model
+            'classroom_id',          // FK for related model in pivot model
+            'id',                        // PK for current model
+            'id'                         // PK for related model
         )->withPivot(['role']);
     }
     public function cratedClassrooms()

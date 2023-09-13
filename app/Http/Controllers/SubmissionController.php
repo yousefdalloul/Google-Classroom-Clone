@@ -9,6 +9,7 @@ use App\Rules\ForbiddenFile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Mockery\Exception;
 use Throwable;
@@ -17,6 +18,8 @@ class SubmissionController extends Controller
 {
     public function store(Request $request, Classwork $classwork)
     {
+
+        Gate::authorize('submissions.create',$classwork);
         // Custom validation using Class Rule
         $request->validate([
             'files' => 'required|array',
@@ -75,7 +78,6 @@ class SubmissionController extends Controller
                 SELECT classwork_id FROM submissions WHERE submissions.classwork_id = classworks.id AND id = ?
             )
         )',[$user->id,'teacher',$submission->id]);
-
          */
 
 

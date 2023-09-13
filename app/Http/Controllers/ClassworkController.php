@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Topic;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
 class ClassworkController extends Controller
@@ -58,6 +59,16 @@ class ClassworkController extends Controller
     public function create(Request $request,Classroom $classroom)
     {
 
+        $response = Gate::inspect('classworks.create',[$classroom]);
+        if (!$response->allowed()){
+            abort(403,$response->message());
+        }
+//        Gate::authorize('classworks.create',[$classroom]);
+
+//        if (!Gate::allows('classworks.create',[$classroom])){
+//            abort(403);
+//        }
+
         $type = $this->getType($request);
         $classwork = new Classwork();
 
@@ -69,6 +80,9 @@ class ClassworkController extends Controller
      */
     public function store(Request $request, Classroom $classroom)
     {
+        if (Gate::denies('classworks.create',[$classroom])){
+            abort(403);
+        }
         $type = $this->getType($request);
 
         $request->validate([
@@ -82,7 +96,7 @@ class ClassworkController extends Controller
 
         $request->merge([
             'user_id' => Auth::id(),
-            'type' => $type,
+            'type' => $type->value,
             'classroom_id' => $classroom->id,
         ]);
 
@@ -119,6 +133,8 @@ class ClassworkController extends Controller
      */
     public function show(Classroom $classroom, Classwork $classwork)
     {
+        Gate::authorize('classworks.view',[$classwork]);
+
         $submissions = Auth::user()
             ->submissions()
             ->where('classwork_id',$classwork->id)
