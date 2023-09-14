@@ -69,3 +69,15 @@
 
     </div>
 </div>
+
+
+@push('scripts')
+    <script src="https://cdn.tiny.cloud/1/j9d86off54egxj7zvcozx5t096g6ikbr4a224tr5t1e4lt1y/tinymce/6/tinymce.min.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#description',
+            plugins: 'ai tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+        });
+    </script>
+@endpush

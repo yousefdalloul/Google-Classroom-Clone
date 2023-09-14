@@ -30,6 +30,30 @@ class ClassworkController extends Controller
             //           ->orWhere('description','LIKE',"%{$request->search}%");
             // }
             // $classworks = $query->paginate(5);
+            ->where(function ($query) {
+                $query->WhereHas('users', function ($query) {
+                    $query->where('id', '=', Auth::id());
+                })
+                    ->orWhereHas('classroom.teachers', function ($query) {
+                        $query->where('id', '=', Auth::id());
+                    });
+            })
+            /* ->where(function ($query) {
+                $query->whereRaw('EXISTS (SELECT 1 FROM classwork_user
+                WHERE classwork_user.classwork_id = classworks.id
+                AND classwork_user.user_id = ?
+                )', [
+                    Auth::id()
+                ]);
+                $query->orWhereRaw('EXISTS (SELECT 1 FROM classroom_user
+                WHERE classroom_user.classroom_id = classworks.classroom_id
+                AND classroom_user.user_id = ?
+                AND classroom_user.role = ?
+                )', [
+                    Auth::id(),
+                    'teacher',
+                ]);
+            })*/
             ->paginate(5);
 
 

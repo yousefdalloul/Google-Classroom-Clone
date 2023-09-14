@@ -37,7 +37,7 @@
                             </h2>
                             <div id="flush-collapse{{ $classwork->id }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
-                                    {{ $classwork->description }}
+                                    {!! $classwork->description !!}
                                     <div>
                                         <a class="btn btn-sm btn-outline-dark" href="{{ route('classrooms.classworks.show',[$classwork->classroom_id,$classwork->id]) }}">View</a>
                                         <a class="btn btn-sm btn-outline-dark" href="{{ route('classrooms.classworks.edit',[$classwork->classroom_id,$classwork->id]) }}">Edit</a>

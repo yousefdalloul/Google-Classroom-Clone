@@ -7,7 +7,9 @@
         <hr>
         <div class="row">
             <div class="col-md-8">
-                <p>{{ $classwork->discription }}</p>
+                <div>
+                    {!! $classwork->description !!}
+                </div>
                 <h4>Comments</h4>
                 <form action="{{ route('comments.store') }}" method="post">
                     @csrf
