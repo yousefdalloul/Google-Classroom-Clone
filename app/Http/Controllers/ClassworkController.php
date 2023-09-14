@@ -126,7 +126,7 @@ class ClassworkController extends Controller
         }
 
         return redirect()->route('classrooms.classworks.index', ['classroom' => $classroom->id])
-            ->with('success', 'Classwork created!');
+            ->with('success', __('Classwork created!'));
     }
 
     /**
@@ -181,7 +181,7 @@ class ClassworkController extends Controller
         $classwork->users()->sync($request->input('students'));
 
         return back()
-            ->with('success','Classwork Update!');
+            ->with('success',__('Classwork Update!'));
     }
 
     /**
