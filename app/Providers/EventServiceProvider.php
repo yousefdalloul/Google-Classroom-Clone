@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\ClassworkCreated;
+use App\Listeners\PostInClassroomStream;
 use App\Models\Classroom;
 use App\Observers\ClassroomObserver;
 use Illuminate\Auth\Events\Registered;
@@ -20,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        ClassworkCreated::class => [
+            PostInClassroomStream::class,
+        ],
     ];
 
     //to connect the event with model Classroom
@@ -33,6 +38,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
        //Classroom::observe(ClassroomObserver::class);
+        //Event::listen('classwork.created',[new PostInClassroomStream(),'handel']);
     }
 
     /**

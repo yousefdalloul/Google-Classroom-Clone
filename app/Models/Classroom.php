@@ -117,6 +117,12 @@ class Classroom extends Model
     {
         return $this->users()->wherePivot('role','=','student');
     }
+
+    public function streams()
+    {
+        $this->hasMany(Stream::class)->latest();
+    }
+
     //local scope
     public function scopeActive(Builder $query)
     {

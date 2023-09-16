@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ClassworkType;
+use App\Events\ClassworkCreated;
 use App\Models\Classroom;
 use App\Models\Classwork;
 use Illuminate\Database\QueryException;
@@ -77,6 +79,12 @@ class ClassworkController extends Controller
 
         }
         return $type;
+
+        try {
+            return ClassworkType::from($request->query('type'));
+        }catch (ValueError $e){
+            return Classwork::TYPE_ASSIGNMENT;
+        }
     }
 
     /**
@@ -96,7 +104,7 @@ class ClassworkController extends Controller
 //            abort(403);
 //        }
 
-        $type = $this->getType($request);
+        $type = $this->getType($request)->value;
         $classwork = new Classwork();
 
         return view('classworks.create',compact('classroom','classwork','type'));
@@ -144,8 +152,13 @@ class ClassworkController extends Controller
 //                $classroom->users()->attach($newStudentIds);
 
                 $classwork->users()->attach($request->input('students'));
+                //event(new ClassworkCreated($classwork));
+
+                ClassworkCreated::dispatch($classwork);
+
+
             });
-        } catch (QueryException $e){
+        } catch (\Exception $e){
             return back()->with('error',$e->getMessage());
         }
 
