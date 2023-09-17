@@ -53,4 +53,12 @@
 {{--        @endforelse--}}
         {{ $classworks->withQueryString()->appends(['v1'=>1,])->links() }}
     </div>
+
+    @push('scripts')
+        <script>
+            const classroomId = "{{ $classwork->classroom_id }}";
+        </script>
+        {{-- @vite(['resources/js/app.js']) --}}
+    @endpush
+
 </x-main-layout>
