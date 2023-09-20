@@ -4,26 +4,26 @@ namespace App\Policies;
 
 use App\Models\Classroom;
 use App\Models\Classwork;
-use App\Models\Scopes\UserClassroomScope;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class ClassworkPolicy
 {
-    public function before(User $user,$abilites)
+
+    public function before(User $user, $ability)
     {
-        if ($user->super_admin){
+        if ($user->super_admin) {
             return true;
         }
     }
-
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user,Classroom $classroom): bool
+    public function viewAny(User $user, Classroom $classroom): bool
     {
         return $user->classrooms()
-            ->wherePivot('classroom_id','=',$classroom->id)
+            // ->withoutGlobalScope(UserClassroomScope::class)
+            ->wherePivot('classroom_id', '=', $classroom->id)
             ->exists();
     }
 
@@ -33,12 +33,12 @@ class ClassworkPolicy
     public function view(User $user, Classwork $classwork): bool
     {
         $teacher = $user->classrooms()
-            ->wherePivot('classroom_id','=',$classwork->classroom_id)
-            ->wherePivot('role','=','teacher')
+            ->wherePivot('classroom_id', '=', $classwork->classroom_id)
+            ->wherePivot('role', '=', 'teacher')
             ->exists();
 
         $assigned = $user->classworks()
-            ->wherePivot('classwork_id','=',$classwork->id)
+            ->wherePivot('classwork_id', '=', $classwork->id)
             ->exists();
 
         return ($teacher || $assigned);
@@ -49,10 +49,12 @@ class ClassworkPolicy
      */
     public function create(User $user, Classroom $classroom): bool
     {
-        $result = $user->classrooms()->withoutGlobalScope(UserClassroomScope::class)
-            ->wherePivot('classroom_id','=',$classroom->id)
-            ->wherePivot('role','=','teacher')
+        $result = $user->classrooms()
+            ->withoutGlobalScope(UserClassroomScope::class)
+            ->wherePivot('classroom_id', '=', $classroom->id)
+            ->wherePivot('role', '=', 'teacher')
             ->exists();
+
         return $result;
     }
 
@@ -61,9 +63,9 @@ class ClassworkPolicy
      */
     public function update(User $user, Classwork $classwork): bool
     {
-        return $classwork->user_id == $user->id && $user->classrooms()
-                ->wherePivot('classroom_id','=',$classwork->classroom_id)
-                ->wherePivot('role','=','teacher')
+        return $classwork->uaer_id == $user->id && $user->classrooms()
+                ->wherePivot('classroom_id', '=', $classwork->classroom_id)
+                ->wherePivot('role', '=', 'teacher')
                 ->exists();
     }
 
@@ -72,9 +74,9 @@ class ClassworkPolicy
      */
     public function delete(User $user, Classwork $classwork): bool
     {
-        return $classwork->user_id == $user->id && $user->classrooms()
-                ->wherePivot('classroom_id','=',$classwork->classroom_id)
-                ->wherePivot('role','=','teacher')
+        return  $classwork->uaer_id == $user->id && $user->classrooms()
+                ->wherePivot('classroom_id', '=', $classwork->classroom_id)
+                ->wherePivot('role', '=', 'teacher')
                 ->exists();
     }
 
@@ -92,5 +94,21 @@ class ClassworkPolicy
     public function forceDelete(User $user, Classwork $classwork): bool
     {
         //
+    }
+
+    public function submissionsCreate(User $user, Classwork $classwork): bool
+    {
+        $teacher = $user->classrooms()
+            ->wherePivot('classroom_id', '=', $classwork->classroom_id)
+            ->wherePivot('role', '=', 'teacher')
+            ->exists();
+
+        if ($teacher) {
+            return false;
+        } else {
+            return $user->classworks()
+                ->wherePivot('classwork_id', '=', $classwork->id)
+                ->exists();
+        }
     }
 }

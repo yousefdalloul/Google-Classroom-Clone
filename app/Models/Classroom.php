@@ -20,15 +20,25 @@ class Classroom extends Model
 {
     use HasFactory,SoftDeletes;
     public static string $disk = 'public';
+
     protected $fillable = [
-        'name','section','subject','room','theme','cover_image_path','code','user_id'
-    ];
+        'name', 'section', 'subject', 'room', 'theme',
+        'cover_image_path', 'code', 'user_id',
+    ]; // تحديد المسموح (white list)
 
     protected $appends = [
-        'cover_image_url'
+        'cover_image_url',
+        // 'user_name',
     ];
 
-    public function getRouteKeyName()
+    protected $hidden = [
+        'cover_image_path',
+        'deleted_at',
+    ];
+    // protected $guarded = ['id'];// تحديد الممنوع (Black list)
+
+
+    public function getRouteKeyName() //تحديد نوع partmeter يلي هتاخده
     {
         return 'id';
     }
@@ -46,14 +56,26 @@ class Classroom extends Model
         return Storage::disk(static::$disk)->delete($path);
     }
 
+//    public static function deleteCoverImage($path)
+//    {
+//        if (!$path || !Storage::disk(Classroom::$disk)->exists($path)) {
+//            return;
+//        }
+//        return Storage::disk(Classroom::$disk)->delete($path);
+//    }
+
     public static function booted()
     {
 
         static::observe(ClassroomObserver::class);
 
-        //static::addGlobalScope('user',function (Builder $query){
-        //  $query->where('user_id','=',Auth::id());
-        //});
+
+        // parent::boot(); //لو استخدمت فنكشن boot لازم اعمل استدعاء للبيرنت
+        //	static::addGlobalScope('user',function(Builder $query){
+        //			$query->where('user_id', '=' , Auth::id());
+        //	});
+
+
         static::addGlobalScope(new UserClassroomScope);
 
         //events listener:
@@ -96,16 +118,18 @@ class Classroom extends Model
     }
 
 
-    public function users(): BelongsToMany
+    public function users()
     {
         return $this->belongsToMany(
-            User::class,                   //Related Model
-            'classroom_user',               //Pivot table
-            'classroom_id',          //FK for current model
-            'user_id',               //FK for related model
-            'id',                        //PK for current model
-            'id'                         //PK for related model
+            User::class, // Related model
+            'classroom_user', // pivot table
+            'classroom_id', // FK for current model in the pivot table
+            'user_id', // FK for related model in the pivot table
+            'id', // PK for current model
+            'id', // PK for related model
         )->withPivot(['role']);
+        // ->as('Join');
+        //->wherePivot('role' , '=' , 'teacher');
     }
 
 
@@ -126,8 +150,10 @@ class Classroom extends Model
     //local scope
     public function scopeActive(Builder $query)
     {
-        $query->where('status','=','active');
+        $query->where('status', '=', 'active');
     }
+    //لما اجي استدعيها بستدعيها ب اسم active من غير scope
+
 
     public function scopeRecent(Builder $query)
     {

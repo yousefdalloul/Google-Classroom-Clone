@@ -6,6 +6,7 @@ use App\Events\ClassworkCreated;
 use App\Models\Stream;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Str;
 
 class PostInClassroomStream
 {
@@ -22,27 +23,25 @@ class PostInClassroomStream
      */
     public function handle(ClassworkCreated $event): void
     {
+        //
+        // dd($classroom);
+
         $classwork = $event->classwork;
 
-        $content = __(':name posted a new :type: :title', [
-            'name'   => $classwork->user->name,
-            'type'  => __($classwork->type->value),
+        $content = __(':name posted a new :type : :title', [
+            'name' => $classwork->user->name,
+            'type' => __($classwork->type->value),
             'title' => $classwork->title,
         ]);
-
-        try {
-            $stream = new Stream([
-                'classroom_id' => $classwork->classroom_id,
-                'user_id'      => $event->classwork->user_id,
-                'content'      => $content,
-                'link'         => route('classrooms.classworks.show', [
-                    $classwork->classroom_id,
-                    $classwork->id,
-                ]),
-            ]);
-            $stream->save();
-        } catch (\Exception $e) {
-            // Handle the exception (e.g., log it or throw a custom exception)
-        }
+        Stream::create([
+            'id' => Str::uuid(),
+            'classroom_id' => $classwork->classroom_id,
+            'user_id' => $classwork->user_id,
+            'content' => $content,
+            'link' => route('classrooms.classworks.show', [
+                $classwork->classroom_id,
+                $classwork->id,
+            ]),
+        ]);
     }
 }

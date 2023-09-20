@@ -29,23 +29,54 @@
                         </div>
                     </div>
                 </form>
-                <div class="mt-4">
+                <div class="bg-light">
                     @foreach ($classwork->comments as $comment)
-                        <div>
-                            <div class="col-md-2">
-                                <img src="">
+                        <div class="row m-lg-3 ">
+                            <div class="col-md-2 ">
+                                <div class="media-body mt-2">
+                                    <img src="https://ui-avatars.com/api/?name={{ $comment->user->name }}&size=70&background=5EBEF5&color=fff"
+                                         class="mr-3x` WqfsMd" alt="User Avatar">
+                                </div>
                             </div>
                             <div class="col-md-10">
-                                <p>By: {{ $comment->user->name }}. Time: {{ $comment->created_at->diffForHumans() }}</p>
-                                <p>By: Unknown User. Time: {{ $comment->created_at }}</p>
-                                <p>{{ $comment->content }}</p>
+                                <div class="media ruTJle mt-2">
+                                    <div class="media-body">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <a href="#" class="gJItbc asQXV">{{ $comment->user->name }}</a>
+                                            <span
+                                                    class="mr-4">{{ $comment->created_at->diffForHumans(null) }}</span>
+                                            <div class="thiSD Gh0umc">
+                                                <div class="dropdown">
+                                                    {{-- <a class="btn btn-link" type="button" id="commentOptionsDropdown"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <svg focusable="false" width="24" height="24" viewBox="0 0 24 24"
+                                                    class=" NMm5M">
+                                                    <path
+                                                        d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
+                                                    </path>
+                                                </svg>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right"
+                                                aria-labelledby="commentOptionsDropdown">
+                                                <a class="dropdown-item" href="#">Edit</a>
+                                                <a class="dropdown-item" href="#">Delete</a>
+                                            </div> --}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="VSWCL tLDEHd mb-2">
+                                            <span>{{ $comment->content }}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     @endforeach
                 </div>
             </div>
             <div class="col-md-4">
-                @can('submissions.create',$classwork)
+                @can('submissions.create',[$classwork])
                 <div class="bordered rounded p-3 bg-light">
                     <h4>Submissions</h4>
                     @if($submissions->count())

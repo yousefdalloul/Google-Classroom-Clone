@@ -1,4 +1,5 @@
 {
+    ":name posted a new :type : :title" : "قام :name بنشر :type : :title",
     "Classrooms": "الصفوف",
     "View": "عرض",
     "Edit": "تحرير",

@@ -21,7 +21,7 @@ class ClassworkController extends Controller
      */
     public function index(Request $request,Classroom $classroom)
     {
-        $this->authorize('viewAny',[Classwork::class,$classroom]);
+        $this->authorize('view-any', [classwork::class, $classroom]);
 
         $classworks = $classroom->classworks()
             ->with('topic') // Eager loading
@@ -90,9 +90,12 @@ class ClassworkController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request,Classroom $classroom)
+    public function create(Request $request, Classroom $classroom, classwork $classwork)
     {
-        $this->authorize('create',[Classwork::class,$classroom]);
+//        if (!Gate::allows('classworks.create', [$classroom])) {
+//            abort(403);
+//        } // excute Authorization
+        $this->authorize('create', [classwork::class, $classroom]);
 
 //        $response = Gate::inspect('classworks.create',[$classroom]);
 //        if (!$response->allowed()){

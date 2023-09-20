@@ -43,6 +43,8 @@
                     <li class="nav-item">
                         <a class="nav-link disabled">Disabled</a>
                     </li>
+
+                    <x-user-notification-menu count="5" ></x-user-notification-menu>
                 </ul>
                 <div>
                     {{ Auth::user()->name }}
@@ -78,6 +80,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
             crossorigin="anonymous"></script>
+
+    <script>
+        var classroomId;
+        const userId = "{{ Auth::id() }}"
+    </script>
+
     @stack('scripts')
+    @vite(['resources/js/app.js'])
+
 </body>
 </html>

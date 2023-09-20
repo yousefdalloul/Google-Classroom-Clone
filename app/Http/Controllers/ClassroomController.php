@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ClassroomRequest;
 use App\Models\Classroom;
+use App\Models\Scopes\UserClassroomScope;
 use App\Test;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Database\Query\Builder;
@@ -23,19 +24,19 @@ class ClassroomController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth'); // ->only('index')
         $this->authorizeResource(Classroom::class);
     }
 
     //Action
     public function index(Request $request) : Renderable
     {
-        $this->authorize('viewAny',Classroom::class);
+        $this->authorize('view-any',Classroom::class);
         //return Collection of classroom
         $classrooms = Classroom::active()
                     ->recent()
                     ->orderBy('created_at','DESC')
-                    //->WithoutGlobalScope(UserClassroomScope)
+//                    ->WithoutGlobalScope(UserClassroomScope::class)
                     ->get();
 
         $success = session('success'); //return value of success in the session

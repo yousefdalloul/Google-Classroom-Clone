@@ -8,27 +8,31 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-        'user_id','commentable_id',
-        'commentable_type','content',
-        'ip','user_agent',
+        'user_id', 'commentable_type', 'commentable_id',
+        'content', 'ip', 'user_agent'
     ];
 
-    protected $with = [
-        'user'
-    ];
+    // protected $with =[
+    //     'user'
+    // ];
+
 
     public function user()
     {
-        return $this->belongsTo(Comment::class,'user_id')->withDefault([
-            'user'=>'Deleted User',
+        return $this->belongsTo(User::class)->withDefault([
+            'name' => 'Deleted User',
         ]);
     }
 
     public function commentable()
     {
-        return $this->morphTo();
+        return $this->morphTo(); //لانه مش مربوط ب مودل| جدول معين
     }
 
-
+    public function classwork()
+    {
+        return $this->belongsTo(Classwork::class);
+    }
 }

@@ -7,10 +7,14 @@ import './bootstrap';
 // Alpine.start();
 
 
-if (classroomId) {
+if (classroomId){
     Echo.private('classroom.' + classroomId)
         .listen('.classwork-created', function (event) {
             alert(event.title);
-        });
+    });
 }
 
+Echo.private('Notifications.' + userId)
+    .notification(function (event){
+        alert(event.body)
+})

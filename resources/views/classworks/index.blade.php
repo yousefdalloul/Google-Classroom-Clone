@@ -2,17 +2,24 @@
     <div class="container">
         <h1>{{ $classroom->name }} (#{{ $classroom->id }})</h1>
         <h3>Classwork
-            @can('create',['App\Models\Classwork',$classroom])
-            <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                   + Create
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="{{ route('classrooms.classworks.create',[$classroom->id, 'type' => 'assignment']) }}">Assignment</a></li>
-                    <li><a class="dropdown-item" href="{{ route('classrooms.classworks.create',[$classroom->id, 'type' => 'material']) }}">Material</a></li>
-                    <li><a class="dropdown-item" href="{{ route('classrooms.classworks.create',[$classroom->id, 'type' => 'question']) }}">Question</a></li>
-                </ul>
-            </div>
+            @can('create', ['App\\Models\classwork', $classroom])
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle shadow-primary" type="button" id="dropdownMenuButton1"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        + Create
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li><a class="dropdown-item"
+                               href="{{ route('classrooms.classworks.create', ['classroom' => $classroom->id, 'type' => 'assignment']) }}">Assignment</a>
+                        </li>
+                        <li><a class="dropdown-item"
+                               href="{{ route('classrooms.classworks.create', ['classroom' => $classroom->id, 'type' => 'question']) }}">Question</a>
+                        </li>
+                        <li><a class="dropdown-item"
+                               href="{{ route('classrooms.classworks.create', ['classroom' => $classroom->id, 'type' => 'material']) }}">Material</a>
+                        </li>
+                    </ul>
+                </div>
             @endcan
         </h3>
         <hr>
@@ -56,9 +63,8 @@
 
     @push('scripts')
         <script>
-            const classroomId = "{{ $classwork->classroom_id }}";
+             classroomId = "{{ $classwork->classroom_id }}";
         </script>
-        {{-- @vite(['resources/js/app.js']) --}}
     @endpush
 
 </x-main-layout>
