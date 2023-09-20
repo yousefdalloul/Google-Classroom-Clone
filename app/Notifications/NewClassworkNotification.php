@@ -3,12 +3,14 @@
 namespace App\Notifications;
 
 use App\Models\Classwork;
+use App\Notifications\Channels\HadaraSmsChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\VonageMessage;
 use Illuminate\Notifications\Notification;
 
 class NewClassworkNotification extends Notification
@@ -33,7 +35,13 @@ class NewClassworkNotification extends Notification
     public function via(object $notifiable): array
     {
         //Channels : Email, Database, Broadcast(pusher), Vonage (sms), Slack
-        $via = ['database','mail','broadcast'];
+        $via = [
+            'database',
+            HadaraSmsChannel::class,
+            'mail',
+            'broadcast',
+            //'vonage',
+        ];
 //        if ($notifiable->receive_mail_notification){
 //            $via[] = 'mail';
 //        }
@@ -96,6 +104,18 @@ class NewClassworkNotification extends Notification
             'classwork' => $classwork->id,
         ];
     }
+
+    public function toVonage(): VonageMessage
+    {
+        return (new VonageMessage)
+            ->content(__('New Classwork Created!'));
+    }
+
+    public function toHadara(): string
+    {
+        return (__('New Classwork Created!'));
+    }
+
 
     /**
      * Get the array representation of the notification.

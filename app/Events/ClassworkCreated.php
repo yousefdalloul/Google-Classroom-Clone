@@ -12,7 +12,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use function Symfony\Component\Translation\t;
 
-class ClassworkCreated implements ShouldBroadcast
+class ClassworkCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

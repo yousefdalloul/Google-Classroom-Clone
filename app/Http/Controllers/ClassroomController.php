@@ -25,13 +25,13 @@ class ClassroomController extends Controller
     public function __construct()
     {
         $this->middleware('auth'); // ->only('index')
-        $this->authorizeResource(Classroom::class);
+        $this->authorizeResource(Classroom::class,'classroom');
     }
 
     //Action
     public function index(Request $request) : Renderable
     {
-        $this->authorize('view-any',Classroom::class);
+        // $this->authorize('view-any',Classroom::class);
         //return Collection of classroom
         $classrooms = Classroom::active()
                     ->recent()

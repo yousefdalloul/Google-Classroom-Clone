@@ -91,7 +91,6 @@ class ClassroomsController extends Controller
             'message' => __('Classrooms updated.'),
             'classroom' => $classroom,
         ];
-
     }
 
     /**

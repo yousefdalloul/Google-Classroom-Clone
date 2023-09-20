@@ -19,7 +19,7 @@ class SubmissionController extends Controller
     public function store(Request $request, Classwork $classwork)
     {
 
-        Gate::authorize('submissions.create',$classwork);
+        Gate::authorize('submissionsCreate', [classwork::class, $classwork]);
         // Custom validation using Class Rule
         $request->validate([
             'files' => 'required|array',

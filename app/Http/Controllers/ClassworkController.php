@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Topic;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rule;
 
 class ClassworkController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
@@ -25,6 +27,17 @@ class ClassworkController extends Controller
 
         $classworks = $classroom->classworks()
             ->with('topic') // Eager loading
+            ->withCount([
+                'users as assigned_count' => function ($query) {
+                    $query->where('classwork_user.status', '=', 'assigned');
+                },
+                'users as turnedin_count' => function ($query) {
+                    $query->where('classwork_user.status', '=', 'submitted');
+                },
+                'users as graded_count' => function ($query) {
+                    $query->whereNotNull('classwork_user.grade');
+                },
+            ])
             ->filter($request->query())      //ScopeFilter
             ->latest('published_at','DEC')   //Query Builder
             // if ($request->search){
@@ -56,7 +69,7 @@ class ClassworkController extends Controller
                     'teacher',
                 ]);
             })*/
-            ->paginate(5);
+            ->paginate();
 
 
         //dd($classworks->groupBy('topicid'));
@@ -107,8 +120,9 @@ class ClassworkController extends Controller
 //            abort(403);
 //        }
 
-        $type = $this->getType($request)->value;
-        $classwork = new Classwork();
+        $type = $this->getType($request);
+        $classwork = new classwork();
+        $classworks = classwork::all();
 
         return view('classworks.create',compact('classroom','classwork','type'));
     }
@@ -136,7 +150,7 @@ class ClassworkController extends Controller
 
         $request->merge([
             'user_id' => Auth::id(),
-            'type' => $type->value,
+            'type' => $type,
             'classroom_id' => $classroom->id,
         ]);
 
@@ -172,63 +186,80 @@ class ClassworkController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Classroom $classroom, Classwork $classwork)
+    public function show(Classroom $classroom, classwork $classwork)
     {
-        $this->authorize('view',$classwork);
-//        Gate::authorize('classworks.view',[$classwork]);
+        $this->authorize('view', $classwork);
+        // Gate::authorize('classworks.create', [$classwork]);
+
 
         $submissions = Auth::user()
             ->submissions()
-            ->where('classwork_id',$classwork->id)
+            ->where('classwork_id', $classwork->id)
             ->get();
+        // if(){}
+        // $invitation_link  = URL::signedRoute('classworks.link', [
+        //     // $invitation_link  = URL::temporarySignedRoute('classrooms.join', now()->addHours(3) ,[
+        //     'classroom' => $classroom->id,
+        //     'classwork' => $classwork->id,
+        // ]);
+        $classwork->load('comments.user');
 
-        //$classwork->load('comments.user');
-        return view('classworks.show',compact('classroom','classwork','submissions'));
+        return View::make('classworks.show', compact('classroom', 'classwork', 'submissions'));
+        // ->with([
+        //     'invitation_link' => $invitation_link,
+        // ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, Classroom $classroom, Classwork $classwork)
+    public function edit(Request $request, Classroom $classroom, classwork $classwork)
     {
-        $this->authorize('update',$classwork);
+        // $this->authorize('update', $classwork);
+        $classwork = $classroom->classworks()
+            ->findOrFail($classwork->id);
         $type = $classwork->type->value;
 
-        $assigned = $classwork->users()->pluck('id')->toArray();
+        $assigned = $classwork->users()
+            ->pluck('id')
+            ->toArray(); // تحول العنصر لاوبجكت
 
-        return view('classworks.edit',compact('classroom','classwork','assigned','type'));
+        return view('classworks.edit', compact('classroom', 'classwork', 'type', 'assigned'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Classroom $classroom, Classwork $classwork)
+    public function update(Request $request, Classroom $classroom, classwork $classwork)
     {
-        $this->authorize('update',$classwork);
 
+        // $this->authorize('update', $classwork);
         $type = $classwork->type;
 
-        $request->validate([
-            'title' => ['required', 'nullable', 'max:255'],
+        $validate =  $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
             'topic_id' => ['nullable', 'int', 'exists:topics,id'],
-            'type' => ['required', 'in:assignment,material,question'],
-            'options.grade' => [Rule::requiredIf(fn()=>$type == 'assignment'),'numeric','min:0'],
-            'options.due' => ['nullable','date','after:published_at'],
+            // 'student' => ['nullable'],
+            'options.grade' => [Rule::requiredIf(fn () => $type == 'assignment' || 'question'), 'numeric', 'min:0'],
+            'options.due' => ['nullable', 'date', 'after:published_at'],
         ]);
 
         $classwork->update($request->all());
-        $classwork->users()->sync($request->input('students'));
-
-        return back()
-            ->with('success',__('Classwork Update!'));
+        return View::make('classworks.show', compact('classroom', 'classwork'))
+            ->with('success', __('Classwork Updated'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Classroom $classroom, Classwork $classwork)
+    public function destroy(Classroom $classroom, classwork $classwork)
     {
-        $this->authorize('delete',$classwork);
+        // $this->authorize('delete', $classwork);
+        $classwork->delete();
+
+        return redirect()->route('classrooms.classworks.index', $classroom->id)
+            ->with('success', 'Classwork deleted');
     }
 }
