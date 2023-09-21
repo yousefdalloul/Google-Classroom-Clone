@@ -5,8 +5,11 @@ use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
+use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\PlansController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\TopicsController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('plans',[PlansController::class,'index'])
+    ->name('plan');
 
 Route::middleware('auth')->group(function (){
     Route::prefix('/classrooms/trashed')
@@ -73,6 +78,21 @@ Route::middleware('auth')->group(function (){
 
     Route::get('/submissions/{submission}',[SubmissionController::class,'file'])
         ->name('submissions.file');
+
+    Route::post('subscriptions',[SubscriptionsController::class,'store'])
+        ->name('subscriptions.store');
+
+    Route::post('payments',[PaymentsController::class,'store'])
+        ->name('payments.store');
+
+    Route::get('/payments/success',[PaymentsController::class,'success'])
+        ->name('payments.success');
+
+    Route::get('/payments/cancel',[PaymentsController::class,'cancel'])
+        ->name('payments.cancel');
+
+    Route::get('subscriptions/{subscription}/pay', [PaymentsController::class, 'create'])
+        ->name('checkout');
 });
 
 require __DIR__.'/auth.php';
