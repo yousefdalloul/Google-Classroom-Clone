@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Concerns\HasPrice;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPrice;
 
     public function features()
     {
@@ -24,12 +25,5 @@ class Plan extends Model
     public function users()
     {
         return $this->belongsToMany(User::class,'subscriptions');
-    }
-    public function Price(): Attribute
-    {
-        return new Attribute(
-            get: fn($price) => $price / 100,
-            set: fn($price) => $price * 100,
-        );
     }
 }

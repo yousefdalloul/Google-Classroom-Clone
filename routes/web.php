@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\TopicsController;
+use App\Http\Controllers\Webhooks\StripeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -85,10 +86,10 @@ Route::middleware('auth')->group(function (){
     Route::post('payments',[PaymentsController::class,'store'])
         ->name('payments.store');
 
-    Route::get('/payments/success',[PaymentsController::class,'success'])
+    Route::get('/payments/{subscription}/success',[PaymentsController::class,'success'])
         ->name('payments.success');
 
-    Route::get('/payments/cancel',[PaymentsController::class,'cancel'])
+    Route::get('/payments/{subscription}/cancel',[PaymentsController::class,'cancel'])
         ->name('payments.cancel');
 
     Route::get('subscriptions/{subscription}/pay', [PaymentsController::class, 'create'])
@@ -96,4 +97,6 @@ Route::middleware('auth')->group(function (){
 });
 
 require __DIR__.'/auth.php';
+
+Route::post('/payments/stripe/webhook',StripeController::class);
 

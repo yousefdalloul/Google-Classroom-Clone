@@ -209,33 +209,31 @@
     </header>
 
     <main>
-        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-            @foreach ($plans as $plan)
-                <div class="col">
-                    <div class="card mb-4 rounded-3 shadow-sm @if ($plan->featured) border-primary @endif">
-                        <div class="card-header py-3 @if ($plan->featured) text-bg-primary border-primary @endif">
-                            <h4 class="my-0 fw-normal">{{ $plan->name }}</h4>
-                        </div>
-                        <div class="card-body">
-                            <h1 class="card-title pricing-card-title">{{ $plan->price }}<small class="text-body-secondary fw-light">/mo</small></h1>
-                            <ul class="list-unstyled mt-3 mb-4">
-                                @foreach ($plan->features as $feature)
-                                    <li>{{ $feature->name }} : {{ $feature->pivot->featuer_value }}</li>
-                                @endforeach
-                            </ul>
-                            <form action="{{ route('subscriptions.store') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="plan_id" value="{{ $plan->id }}">
-                                <input type="hidden" name="period" value="3">
-                                <button type="submit" class="w-100 btn btn-lg btn-primary">Subscribe</button>
-                            </form>
+            <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+                @foreach ($plans as $plan)
+                    <div class="col">
+                        <div class="card mb-4 rounded-3 shadow-sm @if ($plan->featured) border-primary @endif">
+                            <div class="card-header py-3 @if ($plan->featured) text-bg-primary border-primary @endif">
+                                <h4 class="my-0 fw-normal">{{ $plan->name }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">{{ $plan->price }}<small class="text-body-secondary fw-light">/mo</small></h1>
+                                <ul class="list-unstyled mt-3 mb-4">
+                                    @foreach ($plan->features as $feature)
+                                        <li>{{ $feature->name }} : {{ $feature->pivot->featuer_value }}</li>
+                                    @endforeach
+                                </ul>
+                                <form action="{{ route('subscriptions.store') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                    <input type="hidden" name="period" value="3">
+                                    <button type="submit" class="w-100 btn btn-lg btn-primary">Subscribe</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-            @endforeach
-
-        </div>
+                @endforeach
+            </div>
 
         <h2 class="display-6 text-center mb-4">Compare plans</h2>
 

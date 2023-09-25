@@ -2,21 +2,22 @@
 
 namespace App\Models;
 
+use App\Concerns\HasPrice;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use function MongoDB\BSON\toJSON;
 
 class Subscription extends Model
 {
-    use HasFactory;
-    public function Price(): Attribute
-    {
-        return new Attribute(
-            get: fn($price) => $price / 100,
-            set: fn($price) => $price * 100,
-        );
-    }
+    use HasFactory, HasPrice;
+
+    protected $fillable = [
+        'user_id','plan_id','price','expires_at',
+    ];
+
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
     public function users()
     {
         return $this->belongsTo(User::class);
