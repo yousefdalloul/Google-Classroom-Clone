@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\TwoFactorAuthenticationController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ClassworkController;
@@ -28,6 +29,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+
+Route::get('/admin/2fa', [TwoFactorAuthenticationController::class, 'create']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -96,7 +99,7 @@ Route::middleware('auth')->group(function (){
         ->name('checkout');
 });
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';
 
 Route::post('/payments/stripe/webhook',StripeController::class);
 

@@ -47,7 +47,9 @@
                     <x-user-notification-menu count="5" ></x-user-notification-menu>
                 </ul>
                 <div>
-                    {{ Auth::user()->name }}
+                    @if(auth()->check())
+                        {{ auth()->user()->name }}
+                    @endif
                 </div>
                 <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
