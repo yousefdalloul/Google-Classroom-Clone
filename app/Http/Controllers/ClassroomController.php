@@ -24,7 +24,7 @@ class ClassroomController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth'); // ->only('index')
+        $this->middleware('subscribed')->only('create','store'); // ->only('index')
         $this->authorizeResource(Classroom::class,'classroom');
     }
 

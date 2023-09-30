@@ -1,13 +1,18 @@
 <?php
 
+use App\Http\Controllers\Admin\TwoFactorAuthenticationController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\ClassroomPeopleController;
 use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
+use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\PlansController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\SubscriptionsController;
 use App\Http\Controllers\TopicsController;
+use App\Http\Controllers\Webhooks\StripeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +30,8 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/admin/2fa', [TwoFactorAuthenticationController::class, 'create']);
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified','password.confirm'])->name('dashboard');
@@ -35,6 +42,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('plans',[PlansController::class,'index'])
+    ->name('plan');
 
 Route::middleware('auth')->group(function (){
     Route::prefix('/classrooms/trashed')
@@ -73,7 +82,24 @@ Route::middleware('auth')->group(function (){
 
     Route::get('/submissions/{submission}',[SubmissionController::class,'file'])
         ->name('submissions.file');
+
+    Route::post('subscriptions',[SubscriptionsController::class,'store'])
+        ->name('subscriptions.store');
+
+    Route::post('payments',[PaymentsController::class,'store'])
+        ->name('payments.store');
+
+    Route::get('/payments/{subscription}/success',[PaymentsController::class,'success'])
+        ->name('payments.success');
+
+    Route::get('/payments/{subscription}/cancel',[PaymentsController::class,'cancel'])
+        ->name('payments.cancel');
+
+    Route::get('subscriptions/{subscription}/pay', [PaymentsController::class, 'create'])
+        ->name('checkout');
 });
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';
+
+Route::post('/payments/stripe/webhook',StripeController::class);
 

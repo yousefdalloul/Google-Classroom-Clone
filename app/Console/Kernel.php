@@ -2,9 +2,13 @@
 
 namespace App\Console;
 
+use App\Jobs\SendNotificationToExpireSubscriptions;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+/**
+ * @method job(SendNotificationToExpireSubscriptions $param)
+ */
 class Kernel extends ConsoleKernel
 {
     /**
@@ -12,8 +16,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('model:prune')->dailyAt('06:30'); // Change to '06:30' for 6:30 AM
+        $schedule->job(new SendNotificationToExpireSubscriptions())->dailyAt('10:41');
     }
+
+
 
     /**
      * Register the commands for the application.
