@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Topic extends Model
 {
     use HasFactory;
-    const CREATED_AT = 'created_at';
-    const UPDATED_AT = 'updated_at';
+    public $timestamps=false;
+    protected $primaryKey='id';
 
-    protected $connection = 'mysql';
-
-    protected $table='topic';
-    protected $primaryKey = 'id';
-    protected $keyType = 'int';
-    public $incrementing =true;
-    public $timestamps = false;
+    protected $fillable = [
+        'id','classroom_id','user_id'
+    ];
+    public function classworks()
+    {
+        return $this->hasMany(Classwork::class,'topic_id','id');
+    }
 }

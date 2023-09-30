@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\ClassroomPeopleController;
+use App\Http\Controllers\ClassworkController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\JoinClassroomController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\TopicsController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,7 +35,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function (){
     Route::prefix('/classrooms/trashed')
@@ -50,8 +53,27 @@ Route::middleware('auth')->group(function (){
 
     Route::resources([
         'topics'=>TopicsController::class,
-        'classrooms'=>ClassroomController::class
+        'classrooms'=>ClassroomController::class,
     ]);
+
+    // Nested resource for classworks within classrooms
+    Route::resource('classrooms.classworks', ClassworkController::class);
+
+    Route::get('classrooms/{classroom}/people',[ClassroomPeopleController::class,'index'])
+            ->name('classrooms.people');
+    Route::delete('classrooms/{classroom}/people',[ClassroomPeopleController::class,'destroy'])
+            ->name('classrooms.people.destroy');
+
+    Route::post('comments',[CommentController::class,'store'])
+        ->name('comments.store');
+
+    Route::post('classwork/{classwork}/submissions',[SubmissionController::class,'store'])
+        ->name('submissions.store');
+        //->middleware('can:create,App\Model\Classwork');
+
+    Route::get('/submissions/{submission}',[SubmissionController::class,'file'])
+        ->name('submissions.file');
 });
 
+require __DIR__.'/auth.php';
 
