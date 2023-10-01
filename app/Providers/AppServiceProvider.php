@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Classroom;
 use App\Models\Classwork;
 use App\Models\Post;
 use App\Models\User;
@@ -37,6 +38,7 @@ class AppServiceProvider extends ServiceProvider
             'classwork' => classwork::class,
             'Post' => Post::class,
             'user' =>User::class,
+            'classroom'=>Classroom::class,
         ]);
     }
 }

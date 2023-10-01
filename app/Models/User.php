@@ -7,6 +7,8 @@ use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -103,9 +105,18 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
 
     public function subscriptions()
     {
-        return $this->hasMany(Subscription::class,);
+        return $this->hasMany(Subscription::class);
     }
 
+    public function receivedMessage():MorphMany
+    {
+        return $this->morphMany(Message::class,'recipient');
+    }
+
+    public function sendMessage():hasMany
+    {
+        return $this->hasMany(Message::class,'sender_id');
+    }
 
     public function routeNotificationForMail($notification = null)
     {
