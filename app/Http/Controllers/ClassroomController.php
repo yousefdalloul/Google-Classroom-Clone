@@ -176,4 +176,14 @@ class ClassroomController extends Controller
         return redirect(route('classrooms.index'))
             ->with('success','Classroom Deleted!');
     }
+
+    public function chat(Classroom $classroom)
+    {
+        return view(
+            'classrooms.chat',
+            [
+                'classroom' => $classroom,
+            ]
+        );
+    }
 }
