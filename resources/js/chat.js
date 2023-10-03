@@ -60,7 +60,7 @@ import './bootstrap';
         getMessages();
     })
 
-    let ch = Echo.join('classroom-' + classroom)
+    let ch = Echo.join('classroom-' + classrooms)
         .here((users) => {
             for (let i in users) {
                 let user = users[i];

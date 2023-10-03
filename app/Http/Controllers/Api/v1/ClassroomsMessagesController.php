@@ -17,11 +17,11 @@ class ClassroomsMessagesController extends Controller
     {
         return $classroom->messages()
             ->Select([
-                'message.id',
-                'message.sender_id',
-                'message.recipient_id',
-                'message.recipient_type',
-                'message.bady',
+                'messages.id',
+                'messages.sender_id',
+                'messages.recipient_id',
+                'messages.recipient_type',
+                'messages.body',
                 'messages.created_at as sent_at'
             ])
             ->with('sender:id, name')
@@ -37,7 +37,7 @@ class ClassroomsMessagesController extends Controller
         $request->validate([
             'body' => ['required', 'string'],
         ]);
-        $message =    $classroom->messages()->create([
+        $message = $classroom->messages()->create([
             'sender_id' => $request->user()->id,
             'body' => $request->post('body'),
         ]);

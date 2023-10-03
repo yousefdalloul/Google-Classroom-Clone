@@ -12,4 +12,8 @@ class Admin extends User
 {
     use HasFactory, HasApiTokens, Notifiable;
     use TwoFactorAuthenticatable;
+    public function devices()
+    {
+        return $this->morphMany(DeviceToken::class,'tokenable');
+    }
 }
