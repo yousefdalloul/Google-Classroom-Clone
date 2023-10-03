@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Admin;
 use App\Models\Classroom;
 use App\Models\Classwork;
 use App\Models\Post;
@@ -39,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
             'Post' => Post::class,
             'user' =>User::class,
             'classroom'=>Classroom::class,
+            'admin'=>Admin::class,
         ]);
     }
 }

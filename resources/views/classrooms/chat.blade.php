@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layout.master')
 
 @section('title', $classroom->name)
 
@@ -18,7 +18,7 @@
                 </div>
                 <div id="whisper" class="text-sm fs-5 text-muted"></div>
                 <form class="row g-3 align-items-center" id="message-form">
-                    <div class="col-9">
+                    <div class="col-12">
                         <label class="visually-hidden" for="body">Username</label>
                         <div class="input-group">
                             <div class="input-group-text"></div>
@@ -35,7 +35,7 @@
 @endsection
 
 @push('scripts')
-{{--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>--}}
+    {{-- <script src="jquery.min.js"></script> --}}
 
     <script>
         const messages = {
@@ -45,9 +45,9 @@
         const csrf_token = "{{ csrf_token() }}";
         const user = {
             id: "{{ Auth::id() }}",
-            name: "{{ Auth::user()->name }}",
+            name: "{{ Auth::user()->name }}"
         };
-        const classroom = "{{ $classroom->id }}";
+        const calssroom = "{{ $classroom->id }}";
     </script>
 
     @vite(['resources/js/chat.js'])

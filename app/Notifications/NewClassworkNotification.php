@@ -12,6 +12,13 @@ use Illuminate\Notifications\Messages\DatabaseMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\VonageMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\AndroidConfig;
+use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
+use NotificationChannels\Fcm\Resources\AndroidNotification;
+use NotificationChannels\Fcm\Resources\ApnsConfig;
+use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 
 class NewClassworkNotification extends Notification implements ShouldQueue
 {
@@ -37,6 +44,7 @@ class NewClassworkNotification extends Notification implements ShouldQueue
         //Channels : Email, Database, Broadcast(pusher), Vonage (sms), Slack
         $via = [
             'database',
+            FcmChannel::class,
             //HadaraSmsChannel::class,
             //'mail',
             //'broadcast',
@@ -83,6 +91,31 @@ class NewClassworkNotification extends Notification implements ShouldQueue
     public function toBroadcast(object $notifiable):BroadcastMessage
     {
         return new BroadcastMessage($this->createMessage());
+    }
+
+    public function toFcm($notifiable)
+    {
+        $content = __(':name posted a new :type : :title', [
+            'name' => $this->classwork->user->name,
+            'type' => __($this->classwork->type->value),
+            'title' => $this->classwork->title,
+        ]);
+        return FcmMessage::create()
+            ->setData([
+                'classwork_id' => "{$this->classwork->id}",
+                'user_id' => "{$this->classwork->user_id}",
+                ])
+            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+                ->setTitle('New Classwork')
+                ->setBody('Your account has been activated.')
+                ->setImage('http://example.com/url-to-image-here.png'))
+            ->setAndroid(
+                AndroidConfig::create()
+                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
+                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
+            )->setApns(
+                ApnsConfig::create()
+                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
     }
 
     protected function createMessage():array

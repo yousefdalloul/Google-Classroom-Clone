@@ -88,8 +88,58 @@
         const userId = "{{ Auth::id() }}"
     </script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
     @stack('scripts')
     @vite(['resources/js/app.js'])
+<script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-analytics.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-messaging.js"; // Corrected import
+
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyDXVgaMuoAFJ8zWd9_27_TX3QiM-HJZi_I",
+        authDomain: "classrooms-da2ad.firebaseapp.com",
+        projectId: "classrooms-da2ad",
+        storageBucket: "classrooms-da2ad.appspot.com",
+        messagingSenderId: "1024951162698",
+        appId: "1:1024951162698:web:8e30e25802528c9d5f93b3",
+        measurementId: "G-XXNBQ8DM0X"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const messaging = getMessaging(app);
+
+    // Add the public key generated from the console here.
+    getToken(messaging, { vapidKey: "BJwunK77wjvNLZFZ9hb_2gs-5B4nHVtwEWoZFaNLtDxQLwSZeK1mln2aIlUS0BWRzBTJXo9KGS-GRyOiww86CsE" }) // Replace with your VAPID key
+        .then((currentToken) => {
+            console.log(currentToken);
+            if (currentToken) {
+                $.post('/api/v1/devices', {
+                    token: currentToken
+                }, () => { })
+            } else {
+                // Show permission request UI
+                console.log('No registration token available. Request permission to generate one.');
+                // ...
+            }
+        }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+        // ...
+    });
+    onMessage(messaging, (payload) => {
+        console.log('Message received. ', payload);
+        // ...
+    });
+</script>
 
 </body>
 </html>
