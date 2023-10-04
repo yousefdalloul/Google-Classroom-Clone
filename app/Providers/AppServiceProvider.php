@@ -8,10 +8,11 @@ use App\Models\Classwork;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\ServiceProvider;
+use \Spatie\Ignition\Solutions\OpenAi\OpenAiSolutionProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,7 +29,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-
+        $aiSolutionProvider = new OpenAiSolutionProvider(config('app.openai.key'));
+        $aiSolutionProvider->useCache(app('cache'));
+        \Spatie\Ignition\Ignition::make()
+            ->addSolutionProviders([
+                $aiSolutionProvider,
+                // other solution providers...
+            ])
+            ->register();
         // $user = Auth::user();
         // App::setLocale($user->profile->locale);
         // Paginator::useBootstrapFive();

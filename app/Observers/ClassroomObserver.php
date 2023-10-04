@@ -30,7 +30,7 @@ class ClassroomObserver
      */
     public function deleted(Classroom $classroom): void
     {
-        $classroom->status = 'deleted';
+        $classroom->status = 'archive';
         $classroom->save();
     }
 
