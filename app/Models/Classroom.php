@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\UserAlreadyJoinedClassroomExcption;
 use App\Models\Scopes\UserClassroomScope;
 use App\Observers\ClassroomObserver;
 use Exception;
@@ -180,7 +181,8 @@ class Classroom extends Model
         $exists = $this->users()->where('id','=',$user_id)->exists();
 
         if ($exists){
-            throw new Exception('User joined the classroom');
+            $ex = new UserAlreadyJoinedClassroomExcption('User already joined the classroom');
+            $ex->setClassroomId($this->id);
         }
 
         return $this->users->attach($user_id,[
